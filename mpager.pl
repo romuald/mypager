@@ -9,10 +9,11 @@ my $match_null = qr/(?:^NULL\s*)|(?:\s*NULL$)/; # XXX rewrite?
 my $match_int  = qr/^\s*-?\d+\.?\d*$/;
 my $match_date = qr/^(?:[0-9]{4}-[0-9]{2}-[0-9]{2})|(?:[0-9]{2}:[0-9]{2}:[0-9]{2})/;
 
-
+# First line with +---+-----+
 my $header = <>;
 my $columns = [];
 
+print $header;
 if ( $header =~ /^\+(?:-+\+)+$/ ) {
     my $start = 2;
     my @cols = split /\+/, $header;
@@ -25,19 +26,39 @@ if ( $header =~ /^\+(?:-+\+)+$/ ) {
 
         $start += $length + 3;
     }
+} else {
+	print <>;
+	exit;
 }
 
-print $header;
-for (1..2) {
+# XXX bold headers
+{
     my $x = <>;
     print $x;
 }
+
 while (my $line = <>) {
-    print $line, next if $line =~ /^\+/;
+   if ( $line =~ /^\+/ ) {
+		print $line;
+		next;
+	}
+
     for my $slice ( reverse(@$columns) ) {
         my $value = substr($line, $slice->[0], $slice->[1]);
-        substr($line, $slice->[0], $slice->[1]) = colored(["blue"], $value);
+
+		my $color;
+		if ( $value =~ $match_null ) {
+			$color = ["cyan"];
+		} elsif ( $value =~ $match_int ) {
+			$color = ["green"];
+		} elsif ( $value =~ $match_date ) {
+			$color = ["yellow"];
+		}
+		next unless $color;
+		
+		substr($line, $slice->[0], $slice->[1]) = colored($color, $value);
     }
+
     print $line;
 }
 
