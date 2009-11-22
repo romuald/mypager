@@ -65,17 +65,16 @@ sub colcol($) {
 		return $value;
 	}
 	
-	my $color;	
 	if ( $value =~ $match_null ) {
-		$color = $style_null;
-	} elsif ( $value =~ $match_int ) {
-		$color = $style_int;
-	} elsif ( $value =~ $match_date ) {
-		$color = $style_date;
+		return  $style_null . $value . $reset;
 	}
-	return $value unless $color;
-
-	return $color . $value . $reset;
+	if ( $value =~ $match_int ) {
+		return $style_int . $value . $reset;
+	}
+	if ( $value =~ $match_date ) {
+		return $style_date . $value . $reset;
+	}
+	return $value;
 }
 
 $/ = " | \n";
