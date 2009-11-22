@@ -59,7 +59,7 @@ for (1..2) {
 }
 
 sub colcol($) {
-	my $value = shift;
+	my $value = $_[0];
 
 	if ( $value =~ /[a-zA-KMO-TV-Z]/ ) {
 		return $value;
