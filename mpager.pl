@@ -3,11 +3,17 @@
 use strict;
 use warnings;
 use Data::Dumper;
-use Term::ANSIColor qw/colored/;
+use Term::ANSIColor qw/colored :constants/;
 
 my $match_null = qr/(?:^NULL\s*)|(?:\s*NULL$)/; # XXX rewrite?
 my $match_int  = qr/^\s*-?\d+\.?\d*$/;
 my $match_date = qr/^(?:[0-9]{4}-[0-9]{2}-[0-9]{2})|(?:[0-9]{2}:[0-9]{2}:[0-9]{2})/;
+
+my $reset = RESET;
+my $style_int = GREEN;
+my $style_null = CYAN;
+my $style_date = YELLOW;
+# my $style_date = YELLOW . ON_BLUE; # << combinaison example
 
 # First line with +---+-----+
 my $header = <>;
@@ -37,7 +43,6 @@ if ( $header =~ /^\+(?:-+\+)+$/ ) {
 
 	if ( $c > 0 ) {
 		$copy =~ s/\+$//;
-		$copy =~ s/(....)$/(?=$1)/;
 	}
 
 	$magic = qr/$copy/s;
@@ -47,59 +52,39 @@ if ( $header =~ /^\+(?:-+\+)+$/ ) {
 }
 use Data::Dumper;
 
-print Dumper $magic;
 # XXX bold headers
-for (1..1) {
+for (1..2) {
     my $x = <>;
     print $x;
 }
 
-$/ = " | \n";
-
-while (my $line = <>) {
-
-	if ( my @truc = $line =~ $magic ) {
-		print $` . join( ' | ', map { colcol($_) } @truc) . $';
-	}
-	next;
-    if ( $line =~ /^\+/ ) {
-		print $line;
-		next;
-	}
-
-    for my $slice ( reverse(@$columns) ) {
-        my $value = substr($line, $slice->[0], $slice->[1]);
-
-		my $color;
-		if ( $value =~ $match_null ) {
-			$color = ["cyan"];
-		} elsif ( $value =~ $match_int ) {
-			$color = ["green"];
-		} elsif ( $value =~ $match_date ) {
-			$color = ["yellow"];
-		}
-		next unless $color;
-		
-		substr($line, $slice->[0], $slice->[1]) = colored($color, $value);
-    }
-
-    print $line;
-}
-
-sub colcol {
+sub colcol($) {
 	my $value = shift;
-	my $color;
+
+	if ( $value =~ /[a-zA-KMO-TV-Z]/ ) {
+		return $value;
+	}
+	
+	my $color;	
 	if ( $value =~ $match_null ) {
-		$color = ["cyan"];
+		$color = $style_null;
 	} elsif ( $value =~ $match_int ) {
-		$color = ["green"];
+		$color = $style_int;
 	} elsif ( $value =~ $match_date ) {
-		$color = ["yellow"];
+		$color = $style_date;
 	}
 	return $value unless $color;
-	
-	return colored($color, $value);
+
+	return $color . $value . $reset;
 }
 
-#print join("..", @$_)."\n" foreach @$columns;
-print "\n";
+$/ = " | \n";
+while (my $line = <>) {
+	if ( my @truc = $line =~ $magic ) {
+		print '| ', join( ' | ', map { colcol($_) } @truc), $/;
+		#print $line =~ m{$/$} ? $/ : "";
+	} else {
+		print $line;
+	}
+}
+
