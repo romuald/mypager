@@ -14,6 +14,7 @@ my $header = <>;
 my $columns = [];
 
 print $header;
+my $magic;
 if ( $header =~ /^\+(?:-+\+)+$/ ) {
     my $start = 2;
     my @cols = split /\+/, $header;
@@ -26,19 +27,42 @@ if ( $header =~ /^\+(?:-+\+)+$/ ) {
 
         $start += $length + 3;
     }
+	my $copy = $header;
+	chomp($copy);
+	
+	my $c = $copy =~ s{(?:\+-)(-+)(?:-(?=\+))}
+	{
+		"(" . '.{' . length($1) . "}) \Q|\E "
+	}gex;
+
+	if ( $c > 0 ) {
+		$copy =~ s/\+$//;
+		$copy =~ s/(....)$/(?=$1)/;
+	}
+
+	$magic = qr/$copy/s;
 } else {
 	print <>;
 	exit;
 }
+use Data::Dumper;
 
+print Dumper $magic;
 # XXX bold headers
-{
+for (1..1) {
     my $x = <>;
     print $x;
 }
 
+$/ = " | \n";
+
 while (my $line = <>) {
-   if ( $line =~ /^\+/ ) {
+
+	if ( my @truc = $line =~ $magic ) {
+		print $` . join( ' | ', map { colcol($_) } @truc) . $';
+	}
+	next;
+    if ( $line =~ /^\+/ ) {
 		print $line;
 		next;
 	}
@@ -60,6 +84,21 @@ while (my $line = <>) {
     }
 
     print $line;
+}
+
+sub colcol {
+	my $value = shift;
+	my $color;
+	if ( $value =~ $match_null ) {
+		$color = ["cyan"];
+	} elsif ( $value =~ $match_int ) {
+		$color = ["green"];
+	} elsif ( $value =~ $match_date ) {
+		$color = ["yellow"];
+	}
+	return $value unless $color;
+	
+	return colored($color, $value);
 }
 
 #print join("..", @$_)."\n" foreach @$columns;
