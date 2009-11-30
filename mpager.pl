@@ -4,6 +4,9 @@ use strict;
 use warnings;
 use Data::Dumper;
 use Term::ANSIColor qw/colored :constants/;
+use FileHandle;
+# XXX trycatch
+use Term::Readkey ();
 
 my $match_null = qr/(?:^NULL\s*)|(?:\s*NULL$)/; # XXX rewrite?
 my $match_int  = qr/^\s*-?\d+\.?\d*$/;
@@ -14,6 +17,8 @@ my $style_int = GREEN;
 my $style_null = CYAN;
 my $style_date = YELLOW;
 # my $style_date = YELLOW . ON_BLUE; # << combinaison example
+
+my ($term_cols, $term_lines) = Term::ReadKey::GetTerminalSize();
 
 # First line with +---+-----+
 my $header = <>;
@@ -78,12 +83,41 @@ sub colcol($) {
 }
 
 $/ = " | \n";
+
+#sub max($$) { $_[0] >= $_[1] ? $_[0] : $_[1] }
+sub max(@) { (sort @_)[-1] }
+
+my $useless = 0;
+my (@local, @data);
+my ($columns, $lines) = (0, 0);
 while (my $line = <>) {
+	@local = ();
 	if ( my @truc = $line =~ $magic ) {
-		print '| ', join( ' | ', map { colcol($_) } @truc), $/;
-		#print $line =~ m{$/$} ? $/ : "";
+		push @local, '| ', join( ' | ', map { colcol($_) } @truc), $/;
 	} else {
-		print $line;
+		push @local, $line;
 	}
+} continue {
+	#	print "$lines $columns \n";
+	if ( not $useless ) {
+		my $current = join '', @local;
+	
+		$lines += scalar(grep /\n/, $current);
+		
+		# XXX remove escapes or store previous value
+		$columns = max($columns, map {length} split( /\n/, $current) );
+		
+		if ( $lines > $term_lines || $columns > $term_cols) {
+			$useless = FileHandle->new('| less -r -S');
+			print $useless @data, @local;
+			@data = ();
+		} else {
+			push @data, @local;
+		}
+	} else {
+		print $useless @local;
+	}
+	
 }
+print join '', @data unless $useless;
 
