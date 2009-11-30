@@ -2,9 +2,12 @@
 
 use strict;
 use warnings;
+
+require 5.8.0;
+
 use Data::Dumper;
 use Term::ANSIColor qw/colored :constants/;
-use FileHandle;
+
 # XXX trycatch
 use Term::Readkey ();
 
@@ -20,11 +23,25 @@ my $style_date = YELLOW;
 
 my ($term_cols, $term_lines) = Term::ReadKey::GetTerminalSize();
 
+# Global print "buffer" scalar and filehandle
+my $outhandle;
+my $outstring = "";
+
+open($outhandle, "+>", \$outstring)
+	or die("Can't create temporary buffer");
+
+select($outhandle);
+END {
+	# If less was used, then outstring will be empty
+	print STDOUT $outstring;
+}
+
 # First line with +---+-----+
 my $header = <>;
 my $columns = [];
 
 print $header;
+
 my $magic;
 if ( $header =~ /^\+(?:-+\+)+$/ ) {
     my $start = 2;
@@ -55,7 +72,6 @@ if ( $header =~ /^\+(?:-+\+)+$/ ) {
 	print <>;
 	exit;
 }
-use Data::Dumper;
 
 # XXX bold headers
 for (1..2) {
@@ -82,42 +98,35 @@ sub colcol($) {
 	return $value;
 }
 
-$/ = " | \n";
-
-#sub max($$) { $_[0] >= $_[1] ? $_[0] : $_[1] }
 sub max(@) { (sort @_)[-1] }
 
-my $useless = 0;
-my (@local, @data);
-my ($columns, $lines) = (0, 0);
+my $useless;
+my $cur_cols = length($header);
+my $cur_lines = scalar(grep /\n/, $outstring);
+
+$/ = " | \n";
 while (my $line = <>) {
-	@local = ();
-	if ( my @truc = $line =~ $magic ) {
-		push @local, '| ', join( ' | ', map { colcol($_) } @truc), $/;
-	} else {
-		push @local, $line;
-	}
-} continue {
-	#	print "$lines $columns \n";
-	if ( not $useless ) {
-		my $current = join '', @local;
-	
-		$lines += scalar(grep /\n/, $current);
+	# since $/ has been changed, $line may contain multiple lines
+	if ( ! $useless ) {
+		$cur_lines += scalar(grep /\n/, $line);
+		$cur_cols = max($cur_cols, map {length} split( /\n/, $line) );
 		
-		# XXX remove escapes or store previous value
-		$columns = max($columns, map {length} split( /\n/, $current) );
-		
-		if ( $lines > $term_lines || $columns > $term_cols) {
-			$useless = FileHandle->new('| less -r -S');
-			print $useless @data, @local;
-			@data = ();
-		} else {
-			push @data, @local;
+		if ( $cur_lines > $term_lines || $cur_cols - 1 > $term_cols) {
+			# Switch to less, and write current buffer
+			open($useless, '| less -R -S')
+				or die("Can't open less");
+			select($useless);
+						
+			print $useless $outstring;
+			close($outhandle);
+			$outstring = "";
 		}
-	} else {
-		print $useless @local;
 	}
 	
+	if ( my @values = $line =~ $magic ) {
+		print '| ', join( ' | ', map { colcol($_) } @values), $/;
+	} else {
+		print $line;
+	}
 }
-print join '', @data unless $useless;
 
