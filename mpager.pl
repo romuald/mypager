@@ -9,7 +9,7 @@ use Data::Dumper;
 use Term::ANSIColor qw/colored :constants/;
 
 # XXX trycatch
-use Term::Readkey ();
+use Term::ReadKey ();
 
 my $match_null = qr/(?:^NULL\s*)|(?:\s*NULL$)/; # XXX rewrite?
 my $match_int  = qr/^\s*-?\d+\.?\d*$/;
