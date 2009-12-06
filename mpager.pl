@@ -45,28 +45,19 @@ my $columns = [];
 
 print $header;
 
+
+# Build a regexp that will be used to match each line, counting characters
 my $magic;
 if ( $header =~ /^\+(?:-+\+)+$/ ) {
-    my $start = 2;
-    my @cols = split /\+/, $header;
-
-    for my $minus ( @cols[1..$#cols-1] ) {
-        my $length = length($minus) - 2;
-        next if $length < 0;
-
-        push @$columns, [$start, $length];
-
-        $start += $length + 3;
-    }
     my $copy = $header;
     chomp($copy);
 
-    my $c = $copy =~ s{(?:\+-)(-+)(?:-(?=\+))}
+    my $count = $copy =~ s{(?:\+-)(-+)(?:-(?=\+))}
     {
         "(" . '.{' . length($1) . "}) \Q|\E "
     }gex;
 
-    if ( $c > 0 ) {
+    if ( $count > 0 ) {
         $copy =~ s/\+$//;
     }
 
@@ -75,16 +66,17 @@ if ( $header =~ /^\+(?:-+\+)+$/ ) {
     print <>;
     exit;
 }
-
-# XXX bold headers
+# Print the header and next +----+ line
 for (1..2) {
     my $x = <>;
     print $x;
 }
 
-sub colcol($) {
+# Returns a "colored" version of a value
+sub coloredvalue($) {
     my $value = $_[0];
 
+    # Don't go further if any of non "NULL-[0-9]" characters are present
     if ( $value =~ /[a-zA-KMO-TV-Z]/ ) {
         return $value;
     }
@@ -101,6 +93,7 @@ sub colcol($) {
     return $value;
 }
 
+# Quick max function :p
 sub max(@) { (sort @_)[-1] }
 
 my $useless;
@@ -127,9 +120,8 @@ while (my $line = <>) {
     }
 
     if ( my @values = $line =~ $magic ) {
-        print '| ', join( ' | ', map { colcol($_) } @values), $/;
+        print '| ', join( ' | ', map { coloredvalue($_) } @values), $/;
     } else {
         print $line;
     }
 }
-
