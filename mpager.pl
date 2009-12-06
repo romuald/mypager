@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-require 5.8.0;
+require 5.008_000;
 
 use Term::ANSIColor qw/colored :constants/;
 
@@ -104,7 +104,7 @@ $/ = " | \n";
 while (my $line = <>) {
     # since $/ has been changed, $line may contain multiple lines
     if ( ! $useless ) {
-        $cur_lines += scalar(grep /\n/, $line);
+        $cur_lines += $line =~ tr/\n/\n/;
         $cur_cols = max($cur_cols, map {length} split( /\n/, $line) );
 
         if ( $cur_lines > $term_lines || $cur_cols - 1 > $term_cols) {
