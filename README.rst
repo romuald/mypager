@@ -8,9 +8,12 @@ It's goal is to ease the reading of resultsets, doing 2 things:
 - coloring data (numbers, dates and NULLs)
 - using the less command in case the output don't fit in the terminal
 
-.. images examples here ^^
+Here is a sample output:
 
-It currently requires perl v5.8.0, preferably with `Term::ReadKey <http://search.cpan.org/dist/TermReadKey/ReadKey.pm>`_ (should work without, using the ``stty`` command)
+.. image:: http://chivil.com/mysqlpager/sample-colored.png
+
+It currently requires perl 5.8, preferably with the `Term::ReadKey <http://search.cpan.org/dist/TermReadKey/ReadKey.pm>`_ module
+(should work without, using the ``stty`` command)
 
 --------
 
@@ -31,7 +34,6 @@ or edit your ``~/.my.cnf`` file:
 
 **TODO**
 
-- better README and examples ;)
 - bug when dealing with columns bigger than 32k characters
 - be able not to take the columns in account when deciding to switch to less
 - be able to force use / not use of less
