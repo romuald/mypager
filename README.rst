@@ -1,7 +1,12 @@
 Mysql Pager
 ===========
 
-Colorize output of a mysql command line client
+Mysql Pager is a tool meant to be used with the mysql command line client on unix platforms.
+
+It's goal is to ease the reading of resultsets, doing 2 things:
+
+- coloring data (numbers, dates and NULLs)
+- using the less command in case the output don't fit in the terminal
 
 **TODO**
 
