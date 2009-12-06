@@ -1,15 +1,10 @@
 #!/usr/bin/perl
-
 use strict;
 use warnings;
 
 require 5.8.0;
 
-use Data::Dumper;
 use Term::ANSIColor qw/colored :constants/;
-
-# XXX trycatch
-use Term::ReadKey ();
 
 my $match_null = qr/(?:^NULL\s*)|(?:\s*NULL$)/; # XXX rewrite?
 my $match_int  = qr/^\s*-?\d+\.?\d*$/;
@@ -21,7 +16,15 @@ my $style_null = CYAN;
 my $style_date = YELLOW;
 # my $style_date = YELLOW . ON_BLUE; # << combinaison example
 
-my ($term_cols, $term_lines) = Term::ReadKey::GetTerminalSize();
+my ($term_cols, $term_lines) = (0, 0);
+
+# Try to determine the screen size from module or stty
+eval {
+	require "Term/ReadKey.pm";
+	($term_cols, $term_lines) = Term::ReadKey::GetTerminalSize();
+} or eval {
+	($term_lines, $term_cols) = split /\s+/, `stty -F /dev/stderr size`;
+};
 
 # Global print "buffer" scalar and filehandle
 my $outhandle;
