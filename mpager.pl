@@ -45,27 +45,6 @@ my $columns = [];
 
 print $header;
 
-
-# Build a regexp that will be used to match each line, counting characters
-my $magic;
-if ( $header =~ /^\+(?:-+\+)+$/ ) {
-    my $copy = $header;
-    chomp($copy);
-
-    my $count = $copy =~ s{(?:\+-)(-+)(?:-(?=\+))}
-    {
-        "(" . '.{' . length($1) . "}) \Q|\E "
-    }gex;
-
-    if ( $count > 0 ) {
-        $copy =~ s/\+$//;
-    }
-
-    $magic = qr/$copy/s;
-} else {
-    print <>;
-    exit;
-}
 # Print the header and next +----+ line
 for (1..2) {
     my $x = <>;
@@ -75,11 +54,6 @@ for (1..2) {
 # Returns a "colored" version of a value
 sub coloredvalue($) {
     my $value = $_[0];
-
-    # Don't go further if any of non "NULL-[0-9]" characters are present
-    if ( $value =~ /[a-zA-KMO-TV-Z]/ ) {
-        return $value;
-    }
 
     if ( $value =~ $match_null ) {
         return  $style_null . $value . $reset;
@@ -96,13 +70,11 @@ sub coloredvalue($) {
 # Quick max function :p
 sub max(@) { (sort @_)[-1] }
 
-my $useless;
+my $useless = 1;
 my $cur_cols = length($header);
 my $cur_lines = scalar(grep /\n/, $outstring);
 
-$/ = " | \n";
 while (my $line = <>) {
-    # since $/ has been changed, $line may contain multiple lines
     if ( ! $useless ) {
         $cur_lines += $line =~ tr/\n/\n/;
         $cur_cols = max($cur_cols, map {length} split( /\n/, $line) );
@@ -118,10 +90,10 @@ while (my $line = <>) {
             $outstring = "";
         }
     }
-
-    if ( my @values = $line =~ $magic ) {
-        print '| ', join( ' | ', map { coloredvalue($_) } @values), $/;
-    } else {
-        print $line;
-    }
+    
+    $line =~ s{\|\s([-. :0-9NUL]+)(?=\s\|)}{
+        "| " . coloredvalue($1) . "";
+    }gex;
+    
+    print $line;
 }
