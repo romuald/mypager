@@ -34,10 +34,10 @@ or edit your ``~/.my.cnf`` file:
 
 **TODO**
 
-- bug when dealing with columns bigger than 32k characters
+- [bug] when dealing with columns larger than 32k characters
+- [bug] no color on some large TEXT fields for some reason
 - be able not to take the columns in account when deciding to switch to less
-- be able to force use / not use of less
+- be able to force the use (or not use) of less
+- be able to pass options to less (like the -i flag)
+- colors and *"less"* the ``\G`` flag
 - works with perl < v5.8.0
-- be able to pass options to less
-- no color on some big TEXT fields for some reason
-
