@@ -10,6 +10,9 @@ my $match_null = qr/(?:^NULL\s*)|(?:\s*NULL$)/; # XXX rewrite?
 my $match_int  = qr/^\s*-?\d+\.?\d*$/;
 my $match_date = qr/^(?:[0-9]{4}-[0-9]{2}-[0-9]{2})|(?:[0-9]{2}:[0-9]{2}:[0-9]{2})/;
 
+my $date = '\d{4}-\d{2}-\d{2}';
+my $time = '\d{2}:\d{2}:\d{2}';
+
 my $reset = RESET;
 my $style_int = GREEN;
 my $style_null = CYAN;
@@ -74,6 +77,7 @@ my $useless;
 my $cur_cols = length($header);
 my $cur_lines = scalar(grep /\n/, $outstring);
 
+
 while (my $line = <>) {
     if ( ! $useless ) {
         $cur_lines += $line =~ tr/\n/\n/;
@@ -97,7 +101,8 @@ while (my $line = <>) {
 
     $line =~ s/(\| +)(NULL +)(?=\|)/$1$style_null$2$reset/g;
     $line =~ s/(\| +)(-?\d+\.?\d* )(?=\|)/$1$style_int$2$reset/g;
-    $line =~ s/(\| )(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} +)(?=\|)/$1$style_date$2$reset/g;
+    $line =~ s/(\| )((?:$date(?: $time)?|(?:$date )?$time) +)(?=\|)/$1$style_date$2$reset/g;
 
     print $line;
 }
+
