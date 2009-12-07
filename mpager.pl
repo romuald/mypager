@@ -6,13 +6,6 @@ require 5.008_000;
 
 use Term::ANSIColor qw/colored :constants/;
 
-my $match_null = qr/(?:^NULL\s*)|(?:\s*NULL$)/; # XXX rewrite?
-my $match_int  = qr/^\s*-?\d+\.?\d*$/;
-my $match_date = qr/^(?:[0-9]{4}-[0-9]{2}-[0-9]{2})|(?:[0-9]{2}:[0-9]{2}:[0-9]{2})/;
-
-my $date = '\d{4}-\d{2}-\d{2}';
-my $time = '\d{2}:\d{2}:\d{2}';
-
 my $reset = RESET;
 my $style_int = GREEN;
 my $style_null = CYAN;
@@ -54,6 +47,13 @@ for (1..2) {
     print $x;
 }
 
+my $match_null = qr/(?:^NULL\s*)|(?:\s*NULL$)/; # XXX rewrite?
+my $match_int  = qr/^\s*-?\d+\.?\d*$/;
+my $match_date = qr/^(?:[0-9]{4}-[0-9]{2}-[0-9]{2})|(?:[0-9]{2}:[0-9]{2}:[0-9]{2})/;
+
+my $date = '\d{4}-\d{2}-\d{2}';
+my $time = '\d{2}:\d{2}:\d{2}';
+
 # Returns a "colored" version of a value
 sub coloredvalue($) {
     my $value = $_[0];
@@ -76,7 +76,6 @@ sub max(@) { (sort @_)[-1] }
 my $useless;
 my $cur_cols = length($header);
 my $cur_lines = scalar(grep /\n/, $outstring);
-
 
 while (my $line = <>) {
     if ( ! $useless ) {
