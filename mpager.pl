@@ -70,7 +70,7 @@ sub coloredvalue($) {
 # Quick max function :p
 sub max(@) { (sort @_)[-1] }
 
-my $useless = 1;
+my $useless;
 my $cur_cols = length($header);
 my $cur_lines = scalar(grep /\n/, $outstring);
 
@@ -91,9 +91,13 @@ while (my $line = <>) {
         }
     }
     
-    $line =~ s{\|\s([-. :0-9NUL]+)(?=\s\|)}{
-        "| " . coloredvalue($1) . "";
-    }gex;
-    
+    #$line =~ s{\|\s([-. :0-9NUL]+)(?=\s\|)}{
+    #    "| " . coloredvalue($1) . "";
+    #}gex;
+
+    $line =~ s/(\| +)(NULL +)(?=\|)/$1$style_null$2$reset/g;
+    $line =~ s/(\| +)(-?\d+\.?\d* )(?=\|)/$1$style_int$2$reset/g;
+    $line =~ s/(\| )(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} +)(?=\|)/$1$style_date$2$reset/g;
+
     print $line;
 }
