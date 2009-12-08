@@ -10,6 +10,7 @@ my $reset = RESET;
 my $style_int = GREEN;
 my $style_null = CYAN;
 my $style_date = YELLOW;
+my $style_row = MAGENTA;
 # my $style_date = YELLOW . ON_BLUE; # << combinaison example
 
 my ($term_cols, $term_lines) = (0, 0);
@@ -35,17 +36,20 @@ END {
     print STDOUT $outstring;
 }
 
-# First line with +---+-----+
+my $input_format = ""; # unknown by default;
+
+# First line with +---+-----+ or ******
 my $header = <>;
-my $columns = [];
+
+if ( $header =~ /^\+(?:-+\+)+$/ ) {
+    $input_format = "std";
+} elsif ( $header =~ /^\*+/ ) {
+    $input_format = "vertical";
+}
+
+print STDERR $input_format, "\n";
 
 print $header;
-
-# Print the header and next +----+ line
-for (1..2) {
-    my $x = <>;
-    print $x;
-}
 
 my $match_null = qr/(?:^NULL\s*)|(?:\s*NULL$)/; # XXX rewrite?
 my $match_int  = qr/^\s*-?\d+\.?\d*$/;
@@ -57,7 +61,7 @@ my $time = '\d{2}:\d{2}:\d{2}';
 # Quick max function :p
 sub max(@) { (sort @_)[-1] }
 
-my $useless;
+my $useless = !(-t STDOUT) || undef;
 my $cur_cols = length($header);
 my $cur_lines = scalar(grep /\n/, $outstring);
 
@@ -77,10 +81,19 @@ while (my $line = <>) {
             $outstring = "";
         }
     }
-    
-    $line =~ s/(\| +)(NULL +)(?=\|)/$1$style_null$2$reset/g;
-    $line =~ s/(\| +)(-?\d+\.?\d* )(?=\|)/$1$style_int$2$reset/g;
-    $line =~ s/(\| )((?:$date(?: $time)?|(?:$date )?$time) +)(?=\|)/$1$style_date$2$reset/g;
+
+    if ( $input_format eq "std" ) {
+        $line =~ s/(\| +)(NULL +)(?=\|)/$1$style_null$2$reset/g;
+        $line =~ s/(\| +)(-?\d+\.?\d* )(?=\|)/$1$style_int$2$reset/g;
+        $line =~ s/(\| )((?:$date(?: $time)?|(?:$date )?$time) +)(?=\|)/$1$style_date$2$reset/g;
+    } elsif ( $input_format eq "vertical" ) {
+        $line =~ s/^((\*{27}) \d+\..*? \*{27})/$style_row$1$reset/;
+
+        $line =~ s/(: )(NULL)$/$1$style_null$2$reset/;
+        $line =~ s/(: )(-?\d+\.?\d*)$/$1$style_int$2$reset/;
+        $line =~ s/(: )((?:$date(?: $time)?|(?:$date )?$time))$/$1$style_date$2$reset/;
+    }
+
 
     print $line;
 }
