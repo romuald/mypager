@@ -10,6 +10,7 @@ my $reset = RESET;
 my $style_int = GREEN;
 my $style_null = CYAN;
 my $style_date = YELLOW;
+my $style_header = UNDERLINE;
 my $style_row = MAGENTA;
 # my $style_date = YELLOW . ON_BLUE; # << combinaison example
 
@@ -43,13 +44,13 @@ my $header = <>;
 
 if ( $header =~ /^\+(?:-+\+)+$/ ) {
     $input_format = "std";
+    print $header;
 } elsif ( $header =~ /^\*+/ ) {
     $input_format = "vertical";
+    print $style_row, $header, $reset;
+} else {
+    print $header;
 }
-
-print STDERR $input_format, "\n";
-
-print $header;
 
 my $match_null = qr/(?:^NULL\s*)|(?:\s*NULL$)/; # XXX rewrite?
 my $match_int  = qr/^\s*-?\d+\.?\d*$/;
@@ -67,7 +68,7 @@ my $cur_lines = scalar(grep /\n/, $outstring);
 
 while (my $line = <>) {
     if ( ! $useless ) {
-        $cur_lines += 1;
+        $cur_lines++;
         $cur_cols = max($cur_cols, length($line));
 
         if ( $cur_lines > $term_lines || $cur_cols - 1 > $term_cols) {
@@ -83,17 +84,18 @@ while (my $line = <>) {
     }
 
     if ( $input_format eq "std" ) {
-        $line =~ s/(\| +)(NULL +)(?=\|)/$1$style_null$2$reset/g;
-        $line =~ s/(\| +)(-?\d+\.?\d* )(?=\|)/$1$style_int$2$reset/g;
-        $line =~ s/(\| )((?:$date(?: $time)?|(?:$date )?$time) +)(?=\|)/$1$style_date$2$reset/g;
+        $line =~ s/\| +\K(NULL +)(?=\|)/$style_null$1$reset/g;
+        $line =~ s/\| +\K(-?\d+\.?\d* )(?=\|)/$style_int$1$reset/g;
+        $line =~ s/\| \K((?:$date(?: $time)?|(?:$date )?$time) +)(?=\|)/$style_date$1$reset/g;
     } elsif ( $input_format eq "vertical" ) {
         $line =~ s/^((\*{27}) \d+\..*? \*{27})/$style_row$1$reset/;
 
-        $line =~ s/(: )(NULL)$/$1$style_null$2$reset/;
-        $line =~ s/(: )(-?\d+\.?\d*)$/$1$style_int$2$reset/;
-        $line =~ s/(: )((?:$date(?: $time)?|(?:$date )?$time))$/$1$style_date$2$reset/;
-    }
+        $line =~ s/^ *\K(\S+)(?=: )/$style_header$1$reset/;
 
+        $line =~ s/: \K(NULL)$/$style_null$1$reset/ ||
+        $line =~ s/: \K(-?\d+\.?\d*)$/$style_int$1$reset/ ||
+        $line =~ s/: \K((?:$date(?: $time)?|(?:$date )?$time))$/$style_date$1$reset/;
+    }
 
     print $line;
 }
