@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-require 5.008_000;
+require 5.010_000;
 
 use Term::ANSIColor qw/:constants/;
 
@@ -44,7 +44,7 @@ open($outhandle, "+>", \$outstring)
 select($outhandle);
 END {
     # If less was used, then outstring will be empty
-    print STDOUT $outstring;
+    print STDOUT $outstring if $outstring;
 }
 
 my $input_format = ""; # unknown by default;
