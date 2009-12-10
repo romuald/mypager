@@ -92,10 +92,14 @@ while (my $line = <>) {
     }
 
     if ( $input_format eq "std" ) {
+        no warnings 'misc'; # \K raises warnings on perl < v5.10
+
         $line =~ s/\| +\K(NULL +)(?=\|)/$style_null$1$reset/g;
         $line =~ s/\| +\K(-?\d+\.?\d* )(?=\|)/$style_int$1$reset/g;
         $line =~ s/\| \K((?:$date(?: $time)?|(?:$date )?$time) +)(?=\|)/$style_date$1$reset/g;
     } elsif ( $input_format eq "vertical" ) {
+        no warnings 'misc';
+
         $line =~ s/^((\*{27}) \d+\..*? \*{27})/$style_row$1$reset/;
 
         $line =~ s/^ *\K(\S+)(?=: )/$style_header$1$reset/;
