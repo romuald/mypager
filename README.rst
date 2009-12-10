@@ -21,14 +21,14 @@ To use it you'll just have to tell your mysql client to use it as a pager:
 
 ::
 
-  mysql> pager /path/to/mpager.pl
+  mysql> pager /path/to/mypager.pl
 
 or edit your ``~/.my.cnf`` file:
 
 ::
 
   [client]
-      pager = /path/to/mpager.pl
+      pager = /path/to/mypager.pl
 
 --------
 
