@@ -4,19 +4,28 @@ use warnings;
 
 require 5.008_000;
 
-use Term::ANSIColor qw/colored :constants/;
+use Term::ANSIColor qw/:constants/;
 
 my $reset = RESET;
+
+# Different styles for different types
+
 my $style_int = GREEN;
 my $style_null = CYAN;
 my $style_date = YELLOW;
-my $style_header = UNDERLINE;
-my $style_row = MAGENTA;
-# my $style_date = YELLOW . ON_BLUE; # << combinaison example
 
-my ($term_cols, $term_lines) = (0, 0);
+# Column header in the \G styl
+# TODO column headers too
+my $style_header = UNDERLINE;
+
+# Row headers in the \G style
+my $style_row = MAGENTA;
+
+# Styles can be combined too
+# my $style_date = YELLOW . ON_BLUE;
 
 # Try to determine the screen size from module or stty
+my ($term_cols, $term_lines) = (0, 0);
 eval {
     require "Term/ReadKey.pm";
     ($term_cols, $term_lines) = Term::ReadKey::GetTerminalSize();
@@ -25,6 +34,7 @@ eval {
 };
 
 # Global print "buffer" scalar and filehandle
+# Used to store data before sending it to `less` or stdout
 my $outhandle;
 my $outstring = "";
 
@@ -41,7 +51,6 @@ my $input_format = ""; # unknown by default;
 
 # First line with +---+-----+ or ******
 my $header = <>;
-
 if ( $header =~ /^\+(?:-+\+)+$/ ) {
     $input_format = "std";
     print $header;
@@ -49,12 +58,9 @@ if ( $header =~ /^\+(?:-+\+)+$/ ) {
     $input_format = "vertical";
     print $style_row, $header, $reset;
 } else {
+    # Unknown format, will proceed without coloring
     print $header;
 }
-
-my $match_null = qr/(?:^NULL\s*)|(?:\s*NULL$)/; # XXX rewrite?
-my $match_int  = qr/^\s*-?\d+\.?\d*$/;
-my $match_date = qr/^(?:[0-9]{4}-[0-9]{2}-[0-9]{2})|(?:[0-9]{2}:[0-9]{2}:[0-9]{2})/;
 
 my $date = '\d{4}-\d{2}-\d{2}';
 my $time = '\d{2}:\d{2}:\d{2}';
@@ -62,6 +68,8 @@ my $time = '\d{2}:\d{2}:\d{2}';
 # Quick max function :p
 sub max(@) { (sort @_)[-1] }
 
+# If output to a non-terminal, don't bother sending data to less
+# TODO should not buffer in $outstring then
 my $useless = !(-t STDOUT) || undef;
 my $cur_cols = length($header);
 my $cur_lines = scalar(grep /\n/, $outstring);
@@ -99,4 +107,3 @@ while (my $line = <>) {
 
     print $line;
 }
-
