@@ -4,6 +4,7 @@ use warnings;
 
 require 5.008_000;
 
+use POSIX ":sys_wait_h";
 use Term::ANSIColor qw/:constants/;
 
 my $reset = RESET;
@@ -70,10 +71,12 @@ sub max(@) { (sort @_)[-1] }
 
 # If output to a non-terminal, don't bother sending data to less
 # TODO should not buffer in $outstring then
+my $lesspid;
 my $useless = !(-t STDOUT) || undef;
 my $cur_cols = length($header);
 my $cur_lines = scalar(grep /\n/, $outstring);
 
+my $count = 0;
 while (my $line = <>) {
     if ( ! $useless ) {
         $cur_lines++;
@@ -81,13 +84,20 @@ while (my $line = <>) {
 
         if ( $cur_lines > $term_lines || $cur_cols - 1 > $term_cols) {
             # Switch to less, and write current buffer
-            open($useless, '| less -R -S')
+            $lesspid = open($useless, '| less -R -S')
                 or die("Can't open less");
             select($useless);
 
             print $useless $outstring;
             close($outhandle);
             $outstring = "";
+        }
+    } elsif ( $lesspid && $count++ == 300 ) {
+        # every 300 rows, check that less didn't exit
+        # (don't hang CPU on large resultsets)
+        $count = 0;
+        if ( -1 == waitpid($lesspid, WNOHANG)) {
+            last;
         }
     }
 
