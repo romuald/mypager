@@ -34,6 +34,11 @@ eval {
     ($term_lines, $term_cols) = split /\s+/, `stty -F /dev/stderr size`;
 };
 
+
+my %opts = (
+    wrap => 1,
+);
+
 # Global print "buffer" scalar and filehandle
 # Used to store data before sending it to `less` or stdout
 my $outhandle;
@@ -82,7 +87,7 @@ while (my $line = <>) {
         $cur_lines++;
         $cur_cols = max($cur_cols, length($line));
 
-        if ( $cur_lines > $term_lines || $cur_cols - 1 > $term_cols) {
+        if ( $cur_lines > $term_lines || ($opts{wrap} && $cur_cols - 1 > $term_cols)) {
             # Switch to less, and write current buffer
             $lesspid = open($useless, '| less -R -S')
                 or die("Can't open less");
