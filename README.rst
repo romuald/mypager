@@ -27,7 +27,7 @@ or edit your ``~/.my.cnf`` file:
 
 ::
 
-  [client]
+  [msyql]
       pager = /path/to/mypager.pl
 
 --------
