@@ -87,6 +87,12 @@ while (my $line = <>) {
         $cur_lines++;
         $cur_cols = max($cur_cols, length($line));
 
+        # no wrap may wrap:
+        # adding lines may lead to full terminal height
+        # will lead to using less, which will wrap long lines
+        if ( not $opts{wrap} ) {
+            $cur_lines+= int(length($line) / $term_cols);
+        }
         if ( $cur_lines > $term_lines || ($opts{wrap} && $cur_cols - 1 > $term_cols)) {
             # Switch to less, and write current buffer
             $lesspid = open($useless, '| less -R -S')
