@@ -114,7 +114,7 @@ while (my $line = <>) {
 
     if ( $input_format eq "std" ) {
         $line =~ s/(\| +)(NULL +)(?=\|)/$1$style_null$2$reset/g;
-        $line =~ s/(\| +)(-?\d+\.?\d* )(?=\|)/$1$style_int$2$reset/g;
+        $line =~ s/(\| +)(-?\d+\.?\d*(?:e\+\d+)? )(?=\|)/$1$style_int$2$reset/g;
         $line =~ s/\| ((?:$date(?: $time)?|(?:$date )?$time) +)(?=\|)/| $style_date$1$reset/g;
     } elsif ( $input_format eq "vertical" ) {
         $line =~ s/^((\*{27}) \d+\..*? \*{27})/$style_row$1$reset/;
