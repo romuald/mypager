@@ -112,7 +112,7 @@ while (my $line = <>) {
 
         $line =~ s/: (NULL)$/: $style_null$1$reset/ ||
         $line =~ s/: (-?\d+\.?\d*)$/: $style_int$1$reset/ ||
-        $line =~ s/: K((?:$date(?: $time)?|(?:$date )?$time))$/: $style_date$1$reset/;
+        $line =~ s/: ((?:$date(?: $time)?|(?:$date )?$time))$/: $style_date$1$reset/;
     }
 
     print $line;
