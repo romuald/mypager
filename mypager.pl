@@ -36,8 +36,16 @@ eval {
 
 
 my %opts = (
-    wrap => 1,
+    wrap => 0,
+    lessopts => "-S",
 );
+
+if ( $ENV{LESS} ) {
+    # our options should be less important than the ones set in the ENV
+    $ENV{LESS} = $opts{lessopts} . $ENV{LESS};
+} else {
+    $ENV{LESS} = $opts{lessopts};
+}
 
 # Global print "buffer" scalar and filehandle
 # Used to store data before sending it to `less` or stdout
@@ -95,7 +103,7 @@ while (my $line = <>) {
         }
         if ( $cur_lines > $term_lines || ($opts{wrap} && $cur_cols - 1 > $term_cols)) {
             # Switch to less, and write current buffer
-            $lesspid = open($useless, '| less -R -S')
+            $lesspid = open($useless, '| less -R')
                 or die("Can't open less");
             select($useless);
 
