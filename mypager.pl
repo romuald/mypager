@@ -1,4 +1,6 @@
 #!/usr/bin/perl
+package main;
+
 use strict;
 use warnings;
 
@@ -35,16 +37,21 @@ eval {
 };
 
 
-my %opts = (
-    wrap => 0,
-    lessopts => "-S",
-);
+# Config stuff
 
-if ( $ENV{LESS} ) {
-    # our options should be less important than the ones set in the ENV
-    $ENV{LESS} = $opts{lessopts} . $ENV{LESS};
+my %CONF;
+{
+    no warnings qw/prototype/;
+    %CONF = %{ MyPager::Config::get_config() || {} };
+}
+
+$ENV{LESS} ||= "";
+$CONF{"less-options"} ||= "";
+
+if ( $CONF{"less-options-overrides-env"} ) {
+    $ENV{LESS} = $ENV{LESS} . $CONF{"less-options"};
 } else {
-    $ENV{LESS} = $opts{lessopts};
+    $ENV{LESS} = $CONF{"less-options"} . $ENV{LESS};
 }
 
 # Global print "buffer" scalar and filehandle
@@ -95,13 +102,15 @@ while (my $line = <>) {
         $cur_lines++;
         $cur_cols = max($cur_cols, length($line));
 
-        # no wrap may wrap:
         # adding lines may lead to full terminal height
         # will lead to using less, which will wrap long lines
-        if ( not $opts{wrap} ) {
-            $cur_lines+= int(length($line) / $term_cols);
+        if ( not $CONF{"long-lines-to-less"} ) {
+            $cur_lines += int(length($line) / $term_cols);
         }
-        if ( $cur_lines > $term_lines || ($opts{wrap} && $cur_cols - 1 > $term_cols)) {
+
+        if ( $cur_lines > $term_lines ||
+            ($CONF{"long-lines-to-less"} && $cur_cols - 1 > $term_cols) ) {
+
             # Switch to less, and write current buffer
             $lesspid = open($useless, '| less -R')
                 or die("Can't open less");
@@ -136,3 +145,99 @@ while (my $line = <>) {
 
     print $line;
 }
+
+# this should be placed in another file, but I'd really
+# like to keep this utility in one script
+package MyPager::Config;
+
+use strict;
+use warnings;
+
+use Fcntl qw/SEEK_SET/;
+
+use constant CONFPATH => "~/.mypager.conf";
+
+sub get_config() {
+    my %return = ();
+
+    my $config_file = CONFPATH;
+
+    $config_file = glob($config_file);
+
+    my $strconf = undef;
+
+    # Try to read config file, otherwise revert to internal defaults
+    if ( -f $config_file && -r _ ) {
+        open CONF, $config_file;
+        $strconf = join "", <CONF>;
+        close CONF;
+    } else {
+        $strconf = strdata();
+
+        $return{'-defaults'} = 1;
+    }
+
+    # Remove inline comments
+    $strconf =~ s/(?<!\\)\s+#.*//gm;
+
+    # and unescape the non-comments #
+    $strconf =~ s/\\#/#/gm;
+
+    # Simple scalars, allow empty values with "varname = "
+    while ( $strconf =~ /^[\040\t]*([^#\@\s]+?)[\040\t]*=[\040\t]*(.*?)[\040\t]*$/gm  ) {
+        next if defined($return{$1}); # really ?
+
+        $return{$1} = $2;
+    }
+
+    # Arrays
+    while ( $strconf =~ /\@(\S+?)\s*=\s*\((.*?)(?<!\\)\)/gs ) {
+        next if defined($return{$1});
+
+        my @values =
+        # 3. then unescape spaces and parenthesis
+        map { s/\\([ )])/$1/g; $_ }
+        # 2. remove empty matches
+        grep { length }
+        # 1. split using non-escaped whitespaces
+        split /(?<!\\)\s+/s, $2;
+
+        $return{$1} = \@values
+    }
+    # and no dict yet
+
+    return \%return;
+}
+
+sub strdata() {
+    # Rewind data handle after reading, in case we'll need to read it again
+    my $origin = tell(DATA);
+    my $strconf = join "", <DATA>;
+    seek(DATA, $origin, SEEK_SET);
+
+    return $strconf;
+}
+
+1;
+
+# Bellow is the default config, you can copy its contents to ~/.mypager.conf
+# if you wish to configure it.
+# Or simply change the values bellow :)
+__DATA__
+# This is the default configuration file
+
+# 1: mypager will switch to less if it encounters any line longer than screen
+#    width (even if they fit within the height of the screen)
+# 0: it will only take the height as variable to switch to less.
+long-lines-to-less = 1
+
+# Options passed on to less (as environment variable)
+#   default: -S to chop long lines
+#   you can add -I for case insensitive searches for example
+# `man less` for all options
+less-options = -S
+
+# If the $LESS environment variable is already set, the default is to set our
+# config options ("less-options") with a lower priority (in case of conflicts)
+# Set to 1 to "override" the environment variable
+less-options-overrides-env = 0
