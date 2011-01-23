@@ -34,8 +34,5 @@ or edit your ``~/.my.cnf`` file:
 
 **TODO**
 
-- be able not to take the columns in account when deciding to switch to less
 - be able to force the use (or not use) of less
-- be able to pass options to less (like the -I flag),
-  *(alternativelly you can export the LESS environment variable)*
-- works with perl < v5.8.0
+- works with perl < v5.8.0 (or not)
