@@ -35,4 +35,6 @@ or edit your ``~/.my.cnf`` file:
 **TODO**
 
 - be able to force the use (or not use) of less
-- works with perl < v5.8.0 (or not)
+- be able to use another pager using the $PAGER environment variable
+- be able to disable colors
+- works with perl < v5.8.0 *(...or not)*
