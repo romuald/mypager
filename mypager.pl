@@ -84,7 +84,7 @@ if ( $header =~ /^\+(?:-+\+)+$/ ) {
 }
 
 my $date = '\d{4}-\d{2}-\d{2}';
-my $time = '\d{2}:\d{2}:\d{2}';
+my $time = '\d{2}:\d{2}:\d{2}(?:\.\d+)?';
 
 # Quick max function :p
 sub max(@) { (sort @_)[-1] }
