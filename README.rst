@@ -46,7 +46,7 @@ Or in your ``.bashrc`` / ``.zshrc``::
 
 Then, you'll have to edit your ``.psqlrc`` file to set 2 default options::
 
-    -- Headers and surrounding pipes for columns                                    
+    -- Headers and surrounding pipes for columns
     \pset border 2
 
     -- mypager will decide when to switch to less, but will always add color
