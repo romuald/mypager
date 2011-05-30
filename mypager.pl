@@ -17,7 +17,7 @@ my $style_int = GREEN;
 my $style_null = CYAN;
 my $style_date = YELLOW;
 
-# Column header in the \G styl
+# Column header in the \G style
 # TODO column headers too
 my $style_header = UNDERLINE;
 
@@ -239,5 +239,5 @@ less-options = -S
 
 # If the $LESS environment variable is already set, the default is to set our
 # config options ("less-options") with a lower priority (in case of conflicts)
-# Set to 1 to "override" the environment variable
+# Set to 1 to "override" the environment variable options
 less-options-overrides-env = 0
