@@ -1,10 +1,12 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 package main;
 
 use strict;
 use warnings;
 
 require 5.008_000;
+
+use Module::Load;
 
 use POSIX ":sys_wait_h";
 use Term::ANSIColor qw/:constants/;
@@ -30,12 +32,11 @@ my $style_row = MAGENTA;
 # Try to determine the screen size from module or stty
 my ($term_cols, $term_lines) = (0, 0);
 eval {
-    require "Term/ReadKey.pm";
+    load Term::ReadKey;
     ($term_cols, $term_lines) = Term::ReadKey::GetTerminalSize();
 } or eval {
     ($term_lines, $term_cols) = split /\s+/, `stty -F /dev/stderr size`;
 };
-
 
 # Config stuff
 
