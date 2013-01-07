@@ -1,9 +1,13 @@
 My *(sql)*  Pager
 ==================
 
-.. contents:: :depth: 2
+Jump to:
 
-My(sql) Pager is a tool meant to be used with the MySQL and PostgreSQL command line clients on unix platforms.
+- `Usage, Mysql`_
+- `Usage, PostgreSQL`_
+- `TODO`_
+
+mypager is a tool meant to be used with the MySQL and PostgreSQL command line clients on unix platforms.
 
 It's goal is to ease the reading of resultsets, doing 2 things:
 
@@ -18,7 +22,7 @@ It currently requires perl 5.8, preferably with the `Term::ReadKey <http://searc
 (should work without, using the ``stty`` command)
 
 
-Usage - MySQL
+Usage, MySQL
 _________________
 
 To use it you'll just have to tell your mysql client to use it as a pager::
@@ -30,12 +34,12 @@ or edit your ``~/.my.cnf`` file::
   [mysql]
       pager = /path/to/mypager.pl
 
-Usage - PostgreSQL
+Usage, PostgreSQL
 ____________________
 
-The script was originaly designed to work with MySQL, but an option exists in PostgreSQL client that format outputs as mypager expects it.
+The script was originaly designed to work with MySQL, but an option exists in PostgreSQL client that format output as mypager expects it.
 
-You'll have to use the ``PAGER`` environment variable, for example::
+Unlike the mysql client, there is no specific option for the PostgreSQL pager, you'll have to use the ``PAGER`` environment variable, for example::
 
     export PAGER=/path/to/mypager.pl
     psql --stuff
@@ -61,6 +65,4 @@ __________
 - document config options :p
 - allow a *--install* like command line option to install default configuration
 - be able to force the use (or not use) of less
-- be able to use another pager using the $PAGER environment variable
 - be able to disable / change colors
-- works with perl < v5.8.0 *(...or not)*
