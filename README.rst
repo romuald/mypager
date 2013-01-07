@@ -1,8 +1,6 @@
 My *(sql)*  Pager
 ==================
 
-Jump to:
-
 - `Usage, Mysql`_
 - `Usage, PostgreSQL`_
 - `TODO`_
