@@ -9,6 +9,7 @@ require 5.008_000;
 use Module::Load;
 
 use POSIX ":sys_wait_h";
+use Encode qw/encode_utf8 decode_utf8/;
 use Term::ANSIColor qw/:constants/;
 
 my $reset = RESET;
@@ -71,10 +72,21 @@ END {
 
 my $input_format = ""; # unknown by default;
 
+# Columns ("|") positions for standard input
+my @columns;
+
 # First line with +---+-----+ or ******
 my $header = <>;
 if ( $header =~ /^\+(?:-+\+)+$/ ) {
     $input_format = "std";
+
+    if ( $CONF{"fix-utf8"} ) {
+        my $i = 0;
+        for my $char ( split //, $header ) {
+            push(@columns, $i) if $char eq "+";
+            $i++;
+        }
+    }
     print $header;
 } elsif ( $header =~ /^\*+/ ) {
     $input_format = "vertical";
@@ -89,6 +101,52 @@ my $time = '\d{2}:\d{2}:\d{2}(?:\.\d+)?';
 
 # Quick max function :p
 sub max(@) { (sort @_)[-1] }
+
+=head2 fixutf8
+
+Try to fix mysql utf8 buggy output by balancing n bytes
+characters with white spaces at the end of each column
+
+=cut
+sub fixutf8($) {
+    my $line = $_[0];
+    my $uline; # decoded (unicode) version
+    eval {
+        $uline = decode_utf8($line, Encode::FB_CROAK);
+    };
+
+    return $_[0]
+      if (
+        $@                                      # decode error
+        || length($uline) >= length($header)    # no line change
+        || length($_[0])  != length($header)    # no line change
+        || $uline !~ m/^\|.*\|$/                # probably multiline
+      );
+
+    # $line was overwritten by decode
+    $line = $_[0];
+
+    my @cells;
+    my $i = 0;
+    for (; $i < @columns-1; $i++) {
+        # For each cell, try to determine if more bytes
+        # than chars are used in output
+        my $part = substr($line, $columns[$i], $columns[$i+1] - $columns[$i]);
+        my $upart = decode_utf8($part);
+
+        my $diff = length($part) - length($upart);
+        if ($diff <= 0) {
+            push @cells, $part;
+            next;
+        }
+
+        # Append whitespaces corresponding to the additional bytes
+        substr($upart, length($upart)-1, 0, " " x $diff);
+        push @cells, encode_utf8($upart);
+    }
+
+    return join "", @cells, substr($line, $columns[$i]);
+}
 
 # If output to a non-terminal, don't bother sending data to less
 # TODO should not buffer in $outstring then
@@ -131,6 +189,7 @@ while (my $line = <>) {
     }
 
     if ( $input_format eq "std" ) {
+        $line = fixutf8($line) if $CONF{"fix-utf8"};
         $line =~ s/(\| +)(NULL +)(?=\|)/$1$style_null$2$reset/g;
         $line =~ s/(\| +)(-?\d+\.?\d*(?:e\+\d+)? )(?=\|)/$1$style_int$2$reset/g;
         $line =~ s/\| ((?:$date(?: $time)?|(?:$date )?$time) +)(?=\|)/| $style_date$1$reset/g;
@@ -242,3 +301,6 @@ less-options = -S
 # config options ("less-options") with a lower priority (in case of conflicts)
 # Set to 1 to "override" the environment variable options
 less-options-overrides-env = 0
+
+# Experimental
+fix-utf8 = 1
