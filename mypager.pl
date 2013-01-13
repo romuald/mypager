@@ -6,6 +6,8 @@ use warnings;
 
 require 5.008_000;
 
+our $VERSION = '0.4.0';
+
 use Module::Load;
 
 use POSIX ":sys_wait_h";
