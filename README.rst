@@ -3,6 +3,7 @@ My *(sql)*  Pager
 
 - `Usage, Mysql`_
 - `Usage, PostgreSQL`_
+- `Configuration`
 - `TODO`_
 
 mypager is a tool meant to be used with the MySQL and PostgreSQL command line clients on unix platforms.
@@ -57,10 +58,31 @@ Then, you'll have to edit your ``.psqlrc`` file to set 2 default options::
     -- You may want null to be NULL, at your discretion
     -- \pset null NULL
 
+
+Configuration
+_________________
+
+
+The configuration file is located in `~/.mypager.conf`.
+
+A default configuration is present at the end of the script itself, should you wish to modify it instead.
+
+Current options include:
+
+long-lines-to-less
+	0/**1**, with this option set to 1, the pager will switch to less whenever it encounters a line longer than screen width (even if the screen has enough height available)
+
+less-options
+	**-S** these are the options sent to *less* (check out the *OPTIONS* section of the man page for a complete list). The default is to chop long lines, you can add your own choice here, like *-I* to make searches case insensitive.
+
+
+less-options-overrides-env:
+	**0**/1 the default behavior is to add *less-options* before your *$LESS* environment variable so that the options set by your environment take precedence over the script options. Set to *1* to reverse the behavior.
+
+
 TODO
 __________
 
-- document config options :p
 - allow a *--install* like command line option to install default configuration
 - be able to force the use (or not use) of less
 - be able to disable / change colors
