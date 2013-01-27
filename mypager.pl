@@ -167,48 +167,47 @@ sub get_config() {
 
     $config_file = glob($config_file);
 
-    my $strconf = undef;
+    my @todo = strdata();
 
-    # Try to read config file, otherwise revert to internal defaults
+    # Config file overwrites defaults
     if ( -f $config_file && -r _ ) {
         open CONF, $config_file;
-        $strconf = join "", <CONF>;
+        push @todo, join("", <CONF>);
         close CONF;
     } else {
-        $strconf = strdata();
-
         $return{'-defaults'} = 1;
     }
 
-    # Remove inline comments
-    $strconf =~ s/(?<!\\)\s+#.*//gm;
+    for my $strconf (@todo) {
+        # Remove inline comments
+        $strconf =~ s/(?<!\\)\s+#.*//gm;
 
-    # and unescape the non-comments #
-    $strconf =~ s/\\#/#/gm;
+        # and unescape the non-comments #
+        $strconf =~ s/\\#/#/gm;
 
-    # Simple scalars, allow empty values with "varname = "
-    while ( $strconf =~ /^[\040\t]*([^#\@\s]+?)[\040\t]*=[\040\t]*(.*?)[\040\t]*$/gm  ) {
-        next if defined($return{$1}); # really ?
+        # Simple scalars, allow empty values with "varname = "
+        while ( $strconf =~ /^[\040\t]*([^#\@\s]+?)[\040\t]*=[\040\t]*(.*?)[\040\t]*$/gm  ) {
+            # next if defined($return{$1});
 
-        $return{$1} = $2;
+            $return{$1} = $2;
+        }
+
+        # Arrays
+        while ( $strconf =~ /\@(\S+?)\s*=\s*\((.*?)(?<!\\)\)/gs ) {
+            # next if defined($return{$1});
+
+            my @values =
+            # 3. then unescape spaces and parenthesis
+            map { s/\\([ )])/$1/g; $_ }
+            # 2. remove empty matches
+            grep { length }
+            # 1. split using non-escaped whitespaces
+            split /(?<!\\)\s+/s, $2;
+
+            $return{$1} = \@values
+        }
+        # and no dict yet
     }
-
-    # Arrays
-    while ( $strconf =~ /\@(\S+?)\s*=\s*\((.*?)(?<!\\)\)/gs ) {
-        next if defined($return{$1});
-
-        my @values =
-        # 3. then unescape spaces and parenthesis
-        map { s/\\([ )])/$1/g; $_ }
-        # 2. remove empty matches
-        grep { length }
-        # 1. split using non-escaped whitespaces
-        split /(?<!\\)\s+/s, $2;
-
-        $return{$1} = \@values
-    }
-    # and no dict yet
-
     return \%return;
 }
 
