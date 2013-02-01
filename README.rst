@@ -83,6 +83,5 @@ less-options-overrides-env
 TODO
 __________
 
-- allow a *--install* like command line option to install default configuration
 - be able to force the use (or not use) of less
 - be able to disable / change colors

@@ -45,6 +45,12 @@ eval {
 my %CONF;
 {
     no warnings qw/prototype/;
+
+    if ( grep /--installconf/, @ARGV ) {
+        MyPager::Config::write_defaults();
+        exit;
+    }
+
     %CONF = %{ MyPager::Config::get_config() || {} };
 }
 
@@ -218,6 +224,36 @@ sub strdata() {
     seek(DATA, $origin, SEEK_SET);
 
     return $strconf;
+}
+
+=head2 write_defaults
+
+Try to write default configuration,
+may ask permission to overwrite
+
+=cut
+sub write_defaults() {
+    my $config_file = CONFPATH;
+
+    $config_file = glob($config_file);
+
+    if ( -f $config_file ) {
+        local $| = 1; # autoflush
+        print STDERR "$config_file already exits, Overwrite? [y/N] ";
+
+        my $response = <STDIN>;
+
+        exit unless $response =~ /^y/i;
+    }
+
+
+    my $ok = open(CONFWRITE, "> $config_file");
+    if ( !$ok ) {
+        print STDERR "Unable to open $config_file for writing ($!)\n";
+        exit 1;
+    }
+    print CONFWRITE strdata();
+    close CONFWRITE;
 }
 
 1;
