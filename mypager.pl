@@ -74,7 +74,7 @@ END {
 my $input_format = ""; # unknown by default;
 
 # First line with +---+-----+ or ******
-my $header = <>;
+my $header = <STDIN>;
 if ( $header =~ /^\+(?:-+\+)+$/ ) {
     $input_format = "std";
     print $header;
@@ -100,7 +100,7 @@ my $cur_cols = length($header);
 my $cur_lines = scalar(grep /\n/, $outstring);
 
 my $count = 0;
-while (my $line = <>) {
+while (my $line = <STDIN>) {
     if ( ! $useless ) {
         $cur_lines++;
         $cur_cols = max($cur_cols, length($line));
