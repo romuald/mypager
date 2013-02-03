@@ -15,15 +15,14 @@
     <link rel="stylesheet" href="stylesheets/ie.css">
     <![endif]-->
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-
   </head>
   <body>
       <div id="header">
+      <a id="forkme" href="https://github.com/romuald/mypager"></a>
         <nav>
-          <li class="fork"><a href="https://github.com/romuald/mypager">View On GitHub</a></li>
-          <li class="downloads"><a href="https://github.com/romuald/mypager/zipball/master">ZIP</a></li>
-          <li class="downloads"><a href="https://github.com/romuald/mypager/tarball/master">TAR</a></li>
-          <li class="title">DOWNLOADS</li>
+          <li class="title">DOWNLOADS (0.5.0)</li>
+          <li class="downloads"><a href="https://github.com/romuald/mypager/zipball/0.5.0">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/romuald/mypager/tarball/0.5.0">TAR</a></li>
         </nav>
       </div><!-- end header -->
 
@@ -35,21 +34,21 @@
           <p>Pager for mysql command line interface</p>
           <hr>
           <span class="credits left">Project maintained by <a href="https://github.com/romuald">romuald</a></span>
-          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></span>
+          <span class="credits right">Derived from <a href="http://twitter.com/#!/michigangraham">mattgraham</a>'s theme</span>
         </div>
 
-        <h1>My <em>(sql)</em>  Pager</h1>
-
-<ul>
+<ul id="toc">
 <li>
-<code>Usage, Mysql</code>_</li>
+    <a href="#usage-mysql">Usage, Mysql</a></li>
 <li>
-<code>Usage, PostgreSQL</code>_</li>
+    <a href="#usage-psql">Usage, PostgreSQL</a></li>
 <li>
-<code>Configuration</code>_</li>
+    <a href="#configuration">Configuration</a></li>
 <li>
-<code>TODO</code>_</li>
-</ul><p>mypager is a tool meant to be used with the MySQL and PostgreSQL command line clients on unix platforms.</p>
+  <a href="#todo">TODO</a>
+</li>
+</ul>
+<p>mypager is a tool meant to be used with the MySQL and PostgreSQL command line clients on unix platforms.</p>
 
 <p>It's goal is to ease the reading of resultsets, doing 2 things:</p>
 
@@ -58,38 +57,40 @@
 <li>using the less command in case the output don't fit in the terminal</li>
 </ul><p>Here is a sample output:</p>
 
-<p>.. image:: <a href="http://chivil.com/mysqlpager/sample-colored.png">http://chivil.com/mysqlpager/sample-colored.png</a></p>
+<p><img src="http://chivil.com/mysqlpager/sample-colored.png" alt="example"></a></p>
 
-<p>It currently requires perl 5.8, preferably with the <code>Term::ReadKey &lt;http://search.cpan.org/dist/TermReadKey/ReadKey.pm&gt;</code>_ module
+<p>It currently requires perl 5.8, preferably with the <a href="http://search.cpan.org/dist/TermReadKey/ReadKey.pm">Term::ReadKey</a> module
 (should work without, using the <code>stty</code> command)</p>
 
-<p>Usage, MySQL</p>
+<hr>
+<h2 id="usage-mysql">Usage, MySQL</h2>
 
-<hr><p>To use it you'll just have to tell your mysql client to use it as a pager::</p>
+<p>To use it you'll just have to tell your mysql client to use it as a pager:</p>
+<pre><code>mysql&gt; pager /path/to/mypager.pl
+</code></pre>
 
-<p>mysql&gt; pager /path/to/mypager.pl</p>
+<p>or edit your <code>~/.my.cnf</code> file:</p>
 
-<p>or edit your <code>~/.my.cnf</code> file::</p>
+<pre><code>[mysql]
+      pager = /path/to/mypager.pl</code></pre>
 
-<p>[mysql]
-      pager = /path/to/mypager.pl</p>
+<hr>
+<h2 id="usage-psql">Usage, PostgreSQL</h2>
 
-<p>Usage, PostgreSQL</p>
+<p>The script was originaly designed to work with MySQL, but an option exists in PostgreSQL client that format output as mypager expects it.</p>
 
-<hr><p>The script was originaly designed to work with MySQL, but an option exists in PostgreSQL client that format output as mypager expects it.</p>
-
-<p>Unlike the mysql client, there is no specific option for the PostgreSQL pager, you'll have to use the <code>PAGER</code> environment variable, for example::</p>
+<p>Unlike the mysql client, there is no specific option for the PostgreSQL pager, you'll have to use the <code>PAGER</code> environment variable, for example:</p>
 
 <pre><code>export PAGER=/path/to/mypager.pl
 psql --stuff
 </code></pre>
 
-<p>Or in your <code>.bashrc</code> / <code>.zshrc</code>::</p>
+<p>Or in your <code>.bashrc</code> / <code>.zshrc</code>:</p>
 
 <pre><code>alias psql="PAGER=/path/to/mypager.pl psql"
 </code></pre>
 
-<p>Then, you'll have to edit your <code>.psqlrc</code> file to set 2 default options::</p>
+<p>Then, you'll have to edit your <code>.psqlrc</code> file to set 2 default options:</p>
 
 <pre><code>-- Headers and surrounding pipes for columns
 \pset border 2
@@ -101,21 +102,22 @@ psql --stuff
 -- \pset null NULL
 </code></pre>
 
-<p>Configuration</p>
+<hr>
+<h2 id="configuration">Configuration</h2>
 
-<hr><p>The configuration file is located in <code>~/.mypager.conf</code>.</p>
+<p>The configuration file is located in <code>~/.mypager.conf</code></p>
 
 <p>A default configuration is present at the end of the script itself, should you wish to modify it instead.</p>
 
-<p>You can use <code>mypager.pl --installconf</code> to write the default configuration to <code>~/.mypager.conf</code>.</p>
+<p>You can use <code>mypager.pl --installconf</code> to write the default configuration to <code>~/.mypager.conf</code></p>
 
-<h2>Styles</h2>
+<h3>Styles</h3>
 
 <p>Current available styles are <code>style-int</code>, <code>style-null</code>, <code>style-date</code>, <code>style-header</code>, <code>style-row</code></p>
 
 <p><em>header</em> and <em>row</em> styles are used for the <code>\G</code> option of the mysql client (vertically formated output)</p>
 
-<p>You can use any recognized value of the <code>Term::ANSIColor &lt;http://search.cpan.org/dist/Term-ANSIColor/ANSIColor.pm#Function_Interface&gt;</code>_ module, and combine them as you please.</p>
+<p>You can use any recognized value of the <a href="http://search.cpan.org/dist/Term-ANSIColor/ANSIColor.pm#Function_Interface">Term::ANSIColor</a> module, and combine them as you please.</p>
 
 <p>Some valid examples: <code>red</code>, <code>bold blue</code>, or <code>underline white on_black</code></p>
 
@@ -124,21 +126,32 @@ psql --stuff
 <p>long-lines-to-less
     0/**1**, with this option set to 1, the pager will switch to less whenever it encounters a line longer than screen width (even if the screen has enough height available)</p>
 
-<p>less-options
-    <strong>-S</strong>, these are the options sent to less (check out the <em>OPTIONS</em> section of the man page for a complete list). The default is to chop long lines, you can add your own choice here, like <em>-I</em> to make searches case insensitive.</p>
+<dl>
+<dt>less-options</dt>
+<dd>
+    <strong>-S</strong>, these are the options sent to less (check out the <em>OPTIONS</em> section of the man page for a complete list). The default is to chop long lines, you can add your own choice here, like <em>-I</em> to make searches case insensitive.
+</dd>
 
-<p>less-options-overrides-env
-    <strong>0</strong>/1, the default behavior is to add <em>less-options</em> before your <em>$LESS</em> environment variable so that the options set by your environment take precedence over the script options. Set to <em>1</em> to reverse the behavior.</p>
+<dt>less-options-overrides-env</dt>
+<dd>
+    <strong>0</strong>/1, the default behavior is to add <em>less-options</em> before your <em>$LESS</em> environment variable so that the options set by your environment take precedence over the script options. Set to <em>1</em> to reverse the behavior.
+</dd>
 
-<p>use-less
-    <strong>auto</strong>/always/never, will determine whenever or not to switch to less, should you wish to alway use it or just colorize the output</p>
 
-<p>fix-utf8
-    <strong>0</strong>/1, try to fix broken UTF-8 output of older (&lt; 5.5 ?) MySQL clients. This option fixes unaligned columns when 2 bytes characters are present in a cell.</p>
+<dt>use-less</dt>
+<dd>
+    <strong>auto</strong>/always/never, will determine whenever or not to switch to less, should you wish to alway use it or just colorize the output
+</dd>
 
-<p>TODO</p>
+<dt>fix-utf8</dt>
+<dd>
+    <strong>0</strong>/1, try to fix broken UTF-8 output of older (&lt; 5.5 ?) MySQL clients. This option fixes unaligned columns when 2 bytes characters are present in a cell.
+  </dd>
+</dl>
+<hr>
+<h2 id="todo">TODO</h2>
 
-<hr><p>probably lots</p>
+<p>probably lots</p>
       </section>
 
     </div>
@@ -146,3 +159,4 @@ psql --stuff
     
   </body>
 </html>
+<!-- vim: set et ts=2 sw=2: -->

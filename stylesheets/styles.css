@@ -627,7 +627,6 @@ code {
   color: #efefef;
   font-size: 13px;
   margin: 0 4px;
-  padding: 4px 6px;
   -moz-border-radius: 2px;
   -webkit-border-radius: 2px;
   -o-border-radius: 2px;
@@ -771,11 +770,11 @@ dt {
   margin-left: 0px;
 }
 #header nav li.downloads {
-  float: right;
+  float: left;
   margin-left: 6px;
 }
 #header nav li.title {
-  float: right;
+  float: left;
   margin-right: 10px;
   font-size: 11px;
 }
@@ -837,15 +836,41 @@ section #title .credits.right {
   }
 }
 @media print, screen and (max-width: 480px) {
+  body {
+    background: #252525;
+  }
   #header {
-    margin-top: -20px;
+    position: absolute;
+    /*margin-top: -20px;*/
   }
 
   section {
-    margin-top: 40px;
+    /*margin-top: 40px;*/
   }
 
   nav {
-    display: none;
+    /*display: none; */
   }
 }
+
+#forkme {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 149px;
+    height: 149px;
+    background: url(../images/forkme.png) no-repeat;
+}
+
+#forkme:hover {
+    background: url(../images/forkme-hover.png) no-repeat;
+}
+
+.clear {
+  clear: both;
+}
+dd {
+  margin-bottom: 14px;
+}
+
+/* vim: set et ts=2 sw=2: */
