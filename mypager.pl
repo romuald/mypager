@@ -6,7 +6,7 @@ use warnings;
 
 require 5.008_000;
 
-our $VERSION = '0.4.0';
+our $VERSION = '0.5.0';
 
 use Module::Load;
 
