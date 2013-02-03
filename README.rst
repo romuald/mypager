@@ -67,6 +67,8 @@ The configuration file is located in ``~/.mypager.conf``.
 
 A default configuration is present at the end of the script itself, should you wish to modify it instead.
 
+You can use ``mypager.pl --installconf`` to write the default configuration to ``~/.mypager.conf``.
+
 
 Styles
 -------
