@@ -90,4 +90,3 @@ TODO
 __________
 
 - be able to force the use (or not use) of less
-- be able to disable / change colors

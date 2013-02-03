@@ -12,25 +12,11 @@ use Module::Load;
 
 use POSIX ":sys_wait_h";
 use Encode qw/encode_utf8 decode_utf8/;
-use Term::ANSIColor qw/:constants/;
+use Term::ANSIColor qw/color/;
 
-my $reset = RESET;
+my $reset = color('reset');
 
 # Different styles for different types
-
-my $style_int = GREEN;
-my $style_null = CYAN;
-my $style_date = YELLOW;
-
-# Column header in the \G style
-# TODO column headers too
-my $style_header = UNDERLINE;
-
-# Row headers in the \G style
-my $style_row = MAGENTA;
-
-# Styles can be combined too
-# my $style_date = YELLOW . ON_BLUE;
 
 # Try to determine the screen size from module or stty
 my ($term_cols, $term_lines) = (0, 0);
@@ -41,8 +27,7 @@ eval {
     ($term_lines, $term_cols) = split /\s+/, `stty -F /dev/stderr size`;
 };
 
-# Config stuff
-
+# Load (or install) configuration
 my %CONF;
 {
     no warnings qw/prototype/;
@@ -54,6 +39,18 @@ my %CONF;
 
     %CONF = %{ MyPager::Config::get_config() || {} };
 }
+
+my $style_int = color($CONF{'style-int'}) || '';
+my $style_null = color($CONF{'style-null'}) || '';
+my $style_date = color($CONF{'style-date'}) || '';
+
+# Column header in the \G style
+# TODO column headers too
+my $style_header = color($CONF{'style-header'}) || '';
+
+# Row headers in the \G style
+my $style_row = color($CONF{'style-row'}) || '';
+
 
 $ENV{LESS} ||= "";
 $CONF{"less-options"} ||= "";
@@ -322,6 +319,22 @@ sub write_defaults() {
 # Or simply change the values bellow :)
 __DATA__
 # This is the default configuration file
+
+# Colors for each style
+# See Term::ANSIColor documentation for a complete list of available styles
+style-int = green
+style-null = cyan
+style-date = yellow
+
+# Column header in the \G style
+style-header = underline
+
+# Row headers in the \G style
+style-row = magenta
+
+# NOTE, you can combine multiple styles too, for example:
+# style-null = blink bold cyan
+
 
 # 1: mypager will switch to less if it encounters any line longer than screen
 #    width (even if they fit within the height of the screen)
