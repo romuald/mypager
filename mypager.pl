@@ -154,15 +154,63 @@ sub fixutf8($) {
 }
 
 # If output to a non-terminal, don't bother sending data to less
-# TODO should not buffer in $outstring then
+my $less;
 my $lesspid;
-my $useless = !(-t STDOUT) || undef;
+my $useless;
+
+=head2 switch_to_less
+
+Open less in a subprocess, flush the current
+output buffer and set the standard output to it
+
+=cut
+sub switch_to_less() {
+    $lesspid = open($less, '| less -R')
+        or die("Can't open less");
+    select($less);
+
+    print $outstring;
+    close($outhandle);
+
+    $outstring = "";
+}
+
+=head2 less_no_more
+
+Called when sure we won't use less so we don't buffer output internally
+
+=cut
+sub less_no_more() {
+    $useless = 0;
+
+    select STDOUT;
+    print $outstring;
+    close($outhandle);
+    $outstring = "";
+}
+
+# Decide whenever to use less or not .. or maybe
+if ( !-t STDOUT ) {
+    # Output is not a TTY: just colorize
+    less_no_more();
+} else {
+    # Else determine behavior from configuration
+    if ( $CONF{'use-less'} eq 'never' ) {
+        less_no_more();
+    } elsif ( $CONF{'use-less'} eq 'always' ) {
+        $useless = 1;
+        switch_to_less();
+    } else { # auto, or any other setting
+        $useless = 1;
+    }
+}
+
 my $cur_cols = length($header);
 my $cur_lines = scalar(grep /\n/, $outstring);
 
 my $count = 0;
 while (my $line = <STDIN>) {
-    if ( ! $useless ) {
+    if ( !$less && $useless ) {
         $cur_lines++;
         $cur_cols = max($cur_cols, length($line));
 
@@ -174,15 +222,7 @@ while (my $line = <STDIN>) {
 
         if ( $cur_lines > $term_lines ||
             ($CONF{"long-lines-to-less"} && $cur_cols - 1 > $term_cols) ) {
-
-            # Switch to less, and write current buffer
-            $lesspid = open($useless, '| less -R')
-                or die("Can't open less");
-            select($useless);
-
-            print $useless $outstring;
-            close($outhandle);
-            $outstring = "";
+            switch_to_less();
         }
     } elsif ( $lesspid && $count++ == 300 ) {
         # every 300 rows, check that less didn't exit
@@ -195,6 +235,7 @@ while (my $line = <STDIN>) {
 
     if ( $input_format eq "std" ) {
         $line = fixutf8($line) if $CONF{"fix-utf8"};
+
         $line =~ s/(\| +)(NULL +)(?=\|)/$1$style_null$2$reset/g;
         $line =~ s/(\| +)(-?\d+\.?\d*(?:e\+\d+)? )(?=\|)/$1$style_int$2$reset/g;
         $line =~ s/\| ((?:$date(?: $time)?|(?:$date )?$time) +)(?=\|)/| $style_date$1$reset/g;
@@ -210,6 +251,8 @@ while (my $line = <STDIN>) {
 
     print $line;
 }
+
+close($less) if $less;
 
 # this should be placed in another file, but I'd really
 # like to keep this utility in one script
@@ -351,6 +394,10 @@ less-options = -S
 # config options ("less-options") with a lower priority (in case of conflicts)
 # Set to 1 to "override" the environment variable options
 less-options-overrides-env = 0
+
+# Use less .. or not. Valid values are: auto, always, never
+use-less = auto
+
 
 # Fix broken MySQL client output
 # Now useless with recent clients

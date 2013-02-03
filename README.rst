@@ -90,20 +90,20 @@ long-lines-to-less
 
 
 less-options
-	**-S** these are the options sent to less (check out the *OPTIONS* section of the man page for a complete list). The default is to chop long lines, you can add your own choice here, like *-I* to make searches case insensitive.
+	**-S**, these are the options sent to less (check out the *OPTIONS* section of the man page for a complete list). The default is to chop long lines, you can add your own choice here, like *-I* to make searches case insensitive.
 
 
 less-options-overrides-env
-	**0**/1 the default behavior is to add *less-options* before your *$LESS* environment variable so that the options set by your environment take precedence over the script options. Set to *1* to reverse the behavior.
+	**0**/1, the default behavior is to add *less-options* before your *$LESS* environment variable so that the options set by your environment take precedence over the script options. Set to *1* to reverse the behavior.
 
+use-less
+    **auto**/always/never, will determine whenever or not to switch to less, should you wish to alway use it or just colorize the output
 
 fix-utf8
-    **0**/1 try to fix broken UTF-8 output of older (< 5.5 ?) MySQL clients. This option fixes unaligned columns when 2 bytes characters are present in a cell.
-
-
+    **0**/1, try to fix broken UTF-8 output of older (< 5.5 ?) MySQL clients. This option fixes unaligned columns when 2 bytes characters are present in a cell.
 
 
 TODO
 __________
 
-- be able to force the use (or not use) of less
+probably lots
