@@ -302,5 +302,6 @@ less-options = -S
 # Set to 1 to "override" the environment variable options
 less-options-overrides-env = 0
 
-# Experimental
-fix-utf8 = 1
+# Fix broken MySQL client output
+# Now useless with recent clients
+fix-utf8 = 0
