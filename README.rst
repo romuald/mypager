@@ -69,6 +69,16 @@ A default configuration is present at the end of the script itself, should you w
 
 Current options include:
 
+*styles*
+
+    Current styles are `style-int`, `style-null`, `style-date`, `style-header`, `style-row`
+
+    *header* and *row* styles are used for the ``\G`` option of the mysql client (vertically formated output)
+
+    You can use any recognized value of the `Term::ANSIColor <http://search.cpan.org/dist/Term-ANSIColor/ANSIColor.pm#Function_Interface>`_ module, and combine them as you please.
+
+    Some valid examples: ``red``, ``bold blue``, or ``underline white on_black``
+
 
 long-lines-to-less
 	0/**1**, with this option set to 1, the pager will switch to less whenever it encounters a line longer than screen width (even if the screen has enough height available)
