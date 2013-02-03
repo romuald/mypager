@@ -69,8 +69,10 @@ A default configuration is present at the end of the script itself, should you w
 
 Current options include:
 
+
 long-lines-to-less
 	0/**1**, with this option set to 1, the pager will switch to less whenever it encounters a line longer than screen width (even if the screen has enough height available)
+
 
 less-options
 	**-S** these are the options sent to less (check out the *OPTIONS* section of the man page for a complete list). The default is to chop long lines, you can add your own choice here, like *-I* to make searches case insensitive.
@@ -78,6 +80,10 @@ less-options
 
 less-options-overrides-env
 	**0**/1 the default behavior is to add *less-options* before your *$LESS* environment variable so that the options set by your environment take precedence over the script options. Set to *1* to reverse the behavior.
+
+
+fix-utf8
+    **0**/1 try to fix broken UTF-8 output of older (< 5.5 ?) MySQL clients. This option fixes unaligned columns when 2 bytes characters are present in a cell.
 
 
 TODO
