@@ -32,7 +32,7 @@ my %CONF;
 {
     no warnings qw/prototype/;
 
-    if ( grep /--installconf/, @ARGV ) {
+    if ( grep /^--installconf$/, @ARGV ) {
         MyPager::Config::write_defaults();
         exit;
     }
