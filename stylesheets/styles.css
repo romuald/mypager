@@ -835,7 +835,7 @@ section #title .credits.right {
     display: block;
   }
 }
-@media print, screen and (max-width: 480px) {
+@media print, screen and (max-width: 481px) {
   body {
     background: #252525;
   }
@@ -850,6 +850,14 @@ section #title .credits.right {
 
   nav {
     /*display: none; */
+  }
+
+  #forkme {
+    display: none
+  }
+
+  #forkme-small {
+      visibility: visible !important;
   }
 }
 
