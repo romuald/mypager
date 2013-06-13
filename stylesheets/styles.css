@@ -853,12 +853,15 @@ section #title .credits.right {
   }
 
   #forkme {
-    display: none
+    display: none;
   }
 
   #forkme-small {
       visibility: visible !important;
   }
+}
+#forkme-small {
+    visibility: hidden;
 }
 
 #forkme {
@@ -868,10 +871,6 @@ section #title .credits.right {
     width: 149px;
     height: 149px;
     background: url(../images/forkme.png) no-repeat;
-}
-
-#forkme:hover {
-    background: url(../images/forkme-hover.png) no-repeat;
 }
 
 .clear {

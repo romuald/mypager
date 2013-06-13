@@ -6,6 +6,7 @@
     <title>Mypager by romuald</title>
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <link rel="prefetch" href="images/forkglow.png">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
     <script src="javascripts/respond.js"></script>
     <!--[if lt IE 9]>
@@ -15,10 +16,22 @@
     <link rel="stylesheet" href="stylesheets/ie.css">
     <![endif]-->
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <script>
+    $(function() {
+      $('#forkmap').hover(function() {
+        $('#forkme').attr('src', 'images/forkglow.png');
+      }, function() {
+        $('#forkme').attr('src', 'images/b.gif');
+      })
+    })
+    </script>
   </head>
   <body>
       <div id="header">
-      <a id="forkme" href="https://github.com/romuald/mypager"></a>
+      <img id="forkme" src="images/b.gif" usemap="#forkmap">
+      <map id="forkmap" name="forkmap">
+        <area shape="poly" alt="fork" title="Fork me on GitHub!" coords="0,0,75,0,149,75,149,149" href="https://github.com/romuald/mypager">
+      </map>
         <nav>
           <li class="title">DOWNLOADS (0.5.0)</li>
           <li class="downloads"><a href="https://github.com/romuald/mypager/zipball/0.5.0">ZIP</a></li>
