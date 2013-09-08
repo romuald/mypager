@@ -23,10 +23,10 @@ install-bin:
 install-doc:
 ifneq (,$(wildcard $(MANUAL)))  # for future doc
 	install -m 0755 -d $(INSTALL_MAN)
-	pod2man -r "" $(MANUAL) | gzip -9 > $(INSTALL_MAN)/mypager.1.gz
+	pod2man -n 'MYPAGER' -r "" $(MANUAL) $(INSTALL_MAN)/mypager.1
 endif
 
 
 uninstall:
 	rm -f $(INSTALL_BIN)/mypager
-	rm -f $(INSTALL_MAN)/mypager.1.gz
+	rm -f $(INSTALL_MAN)/mypager.1
