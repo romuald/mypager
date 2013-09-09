@@ -1,0 +1,13 @@
+Source: mypager
+Maintainer: Romuald Brunet <romuald@chivil.com>
+Section: misc
+Priority: optional
+Standards-Version: 3.9.2
+Build-Depends: debhelper (>= 8), perl (>= 5.8.0)
+
+
+Package: mypager
+Architecture: all
+Depends: perl (>= 5.8.0), libterm-readkey-perl
+Description: description is still todo
+ still todo

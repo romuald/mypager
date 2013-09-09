@@ -2,14 +2,14 @@ whoami := $(shell whoami)
 
 # install to home dir if not root
 ifeq (root,$(whoami))
-PREFIX := /usr/local
+prefix := /usr/local
 else
-PREFIX := $(HOME)
+prefix := $(HOME)
 endif
 
 MANUAL = MANUAL.pod
-INSTALL_BIN = $(PREFIX)/bin
-INSTALL_MAN = $(PREFIX)/man/man1
+INSTALL_BIN = $(DESTDIR)$(prefix)/bin
+INSTALL_MAN = $(DESTDIR)$(prefix)/share/man/man1
 
 default:
 	@echo Please use make install
