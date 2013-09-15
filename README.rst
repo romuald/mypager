@@ -38,7 +38,7 @@ ____________________
 
 The script was originaly designed to work with MySQL, but an option exists in PostgreSQL client that format output as mypager expects it.
 
-Unlike the mysql client, there is no specific option for the PostgreSQL pager, you'll have to use the ``PAGER`` environment variable, for example::
+Unlike the mysql client, there is no specific option in the PostgreSQL client, you'll have to use the ``PAGER`` environment variable, for example::
 
     export PAGER=/path/to/mypager.pl
     psql --stuff
