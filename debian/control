@@ -4,10 +4,15 @@ Section: misc
 Priority: optional
 Standards-Version: 3.9.2
 Build-Depends: debhelper (>= 8), perl (>= 5.8.0)
+Vcs-Git: https://github.com/romuald/mypager.git
+Vcs-Browser: https://github.com/romuald/mypager
+Homepage: http://romuald.github.io/mypager/
 
 
 Package: mypager
 Architecture: all
-Depends: perl (>= 5.8.0), libterm-readkey-perl
-Description: description is still todo
- still todo
+Depends: perl (>= 5.8.0), less, libterm-readkey-perl
+Description: pager for MySQL/PostgreSQL command line clients
+ Userfriendly pager that will add color to resultsets of MySQL or
+ PostgreSQL command line clients. It will also automatically use less
+ when terminal isn't able to display the full resultset in one page.
