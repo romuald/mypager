@@ -13,6 +13,6 @@ Package: mypager
 Architecture: all
 Depends: perl (>= 5.8.0), less, libterm-readkey-perl
 Description: pager for MySQL/PostgreSQL command line clients
- Userfriendly pager that will add color to resultsets of MySQL or
+ Userfriendly pager that will add color to query results of MySQL or
  PostgreSQL command line clients. It will also automatically use less
- when terminal isn't able to display the full resultset in one page.
+ when terminal isn't able to display the full result in one page.

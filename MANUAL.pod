@@ -1,0 +1,51 @@
+=head1 MYPAGER
+
+
+Pager toolthat will add color to query results of MySQL or
+PostgreSQL command line clients. It will also automatically use less
+when terminal isn't able to display the full result in one page.
+
+mypager is meant to be used as a pager from the mysql or psql command line clients. To use it you must configure them properly.
+
+=head2 USAGE (MYSQL)
+
+
+Inside the mysql client, use the `pager` command, then check using a simple select:
+
+  pager mypager
+  select 1;
+
+Alternatively, you can set mypager as the default pager in your client configuration.
+
+In `~/.my.cnf`:
+
+  [mysql]
+  pager = mypager
+
+
+=head2 USAGE (PSQL)
+
+Unlike the mysql client, there is no specific option in the psql client, you'll have to use the PAGER environment variable:
+
+  PAGER=mypager psql --connect-options
+
+You may wish to add an alias in your preferred shell rc:
+
+  alias psql="PAGER=mypager psql"
+
+
+Additionally, you'll need to change how query results are shown by editing your `~/.psqlrc` file:
+
+  -- Headers and surrounding pipes for columns
+  \pset border 2
+  
+  -- mypager will decide when to switch to less, but will always add color
+  \pset pager always
+  
+  -- You may want null to be NULL, at your discretion
+  \pset null NULL
+
+
+=head2 CONFIGURATION
+
+TODO
