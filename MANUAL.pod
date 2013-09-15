@@ -10,14 +10,14 @@ mypager is meant to be used as a pager from the mysql or psql command line clien
 =head2 USAGE (MYSQL)
 
 
-Inside the mysql client, use the `pager` command, then check using a simple select:
+Inside the mysql client, use the C<pager> command, then check using a simple select:
 
   pager mypager
   select 1;
 
 Alternatively, you can set mypager as the default pager in your client configuration.
 
-In `~/.my.cnf`:
+In C<~/.my.cnf>:
 
   [mysql]
   pager = mypager
@@ -34,7 +34,7 @@ You may wish to add an alias in your preferred shell rc:
   alias psql="PAGER=mypager psql"
 
 
-Additionally, you'll need to change how query results are shown by editing your `~/.psqlrc` file:
+Additionally, you'll need to change how query results are shown by editing your C<~/.psqlrc> file:
 
   -- Headers and surrounding pipes for columns
   \pset border 2
