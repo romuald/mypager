@@ -8,7 +8,7 @@ prefix := /usr/local
 else
 prefix := $(HOME)
 # Try to guess user local man path
-#MANBASE = $(shell manpath | perl -ne 'chomp;  s/^\Q$$ENV{HOME}\\E)// && print && exit for (split /:/)')
+MANBASE = $(shell manpath | perl -ne 'chomp; s/^\Q$$ENV{HOME}\E// > 0 && print && exit for (split /:/)')
 endif
 
 MANUAL = MANUAL.pod
