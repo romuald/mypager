@@ -12,7 +12,8 @@ use Module::Load;
 
 use POSIX ":sys_wait_h";
 use Encode qw/encode_utf8 decode_utf8/;
-use Term::ANSIColor qw/color/;
+use Digest::MD5 qw/md5/;
+use Term::ANSIColor qw/color colored/;
 
 my $reset = color('reset');
 
@@ -75,6 +76,24 @@ END {
     print STDOUT $outstring if $outstring;
 }
 
+sub uuid_color($) {
+    my $uuid = $_[0];
+
+    my $digest = md5($uuid);
+
+    my ($b1, $b2, $b3, $b4, $b5) = unpack('CCCCC', $digest);
+    #my $b1 = ord(substr($digest, 0, 1));
+    my $s1 = color("rgb" . ($b1 % 5) . ($b1 % 5) . "5");
+    my $s2 = color("rgb" . ($b2 % 5) . ($b2 % 5) . "5");
+    my $s3 = color("rgb" . ($b3 % 5) . ($b3 % 5) . "5");
+    my $s4 = color("rgb" . ($b4 % 5) . ($b4 % 5) . "5");
+    my $s5 = color("rgb" . ($b5 % 5) . ($b5 % 5) . "5");
+
+    $uuid =~ s{([0-9a-f]{8})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{12})}{$s1$1$reset-$s2$2$reset-$s3$3$reset-$s4$4$reset-$s5$5$reset}i;
+
+    return $uuid;
+}
+
 my $input_format = ""; # unknown by default;
 
 # Columns ("|") positions for standard input
@@ -103,6 +122,7 @@ if ( $header =~ /^\+(?:-+\+)+$/ ) {
 
 my $date = '\d{4}-\d{2}-\d{2}';
 my $time = '\d{2}:\d{2}:\d{2}(?:\.\d+)?';
+my $uuid = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}';
 
 # Quick max function :p
 sub max(@) { (sort @_)[-1] }
@@ -239,6 +259,7 @@ while (my $line = <STDIN>) {
         $line =~ s/(\| +)(NULL +)(?=\|)/$1$style_null$2$reset/g;
         $line =~ s/(\| +)(-?\d+\.?\d*(?:e\+\d+)? )(?=\|)/$1$style_int$2$reset/g;
         $line =~ s/\| ((?:$date(?: $time)?|(?:$date )?$time) +)(?=\|)/| $style_date$1$reset/g;
+        $line =~ s/\| ($uuid +)(?=\|)/"| " . uuid_color($1) . "$reset"/gie;
     } elsif ( $input_format eq "vertical" ) {
         $line =~ s/^((\*{27}) \d+\..*? \*{27})/$style_row$1$reset/;
 
