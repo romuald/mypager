@@ -76,22 +76,27 @@ END {
     print STDOUT $outstring if $outstring;
 }
 
-sub uuid_color($) {
-    my $uuid = $_[0];
+my $UUIDCOLORS = [
+    ["rgb511", "rgb522", "rgb533", "rgb544"],  # red
+    ["rgb151", "rgb252", "rgb353", "rgb454"],  # green
+    ["rgb115", "rgb225", "rgb335", "rgb445"],  # blue
+    ["rgb551", "rgb552", "rgb553", "rgb554"],  # yellow
+    ["rgb515", "rgb525", "rgb535", "rgb545"],  # magenta
+];
 
-    my $digest = md5($uuid);
+sub uuid_color() {
+    my $digest = md5("$1$2$3$4$5");
+    
+    my @b = unpack('CCCCCC', $digest);
+    my @colors = @{ $UUIDCOLORS->[$b[0] % @$UUIDCOLORS] };
+    my $c = scalar(@colors);
 
-    my ($b1, $b2, $b3, $b4, $b5) = unpack('CCCCC', $digest);
-    #my $b1 = ord(substr($digest, 0, 1));
-    my $s1 = color("rgb" . ($b1 % 5) . ($b1 % 5) . "5");
-    my $s2 = color("rgb" . ($b2 % 5) . ($b2 % 5) . "5");
-    my $s3 = color("rgb" . ($b3 % 5) . ($b3 % 5) . "5");
-    my $s4 = color("rgb" . ($b4 % 5) . ($b4 % 5) . "5");
-    my $s5 = color("rgb" . ($b5 % 5) . ($b5 % 5) . "5");
-
-    $uuid =~ s{([0-9a-f]{8})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{12})}{$s1$1$reset-$s2$2$reset-$s3$3$reset-$s4$4$reset-$s5$5$reset}i;
-
-    return $uuid;
+    return 
+        color($colors[$b[1] % $c]) . "$1$reset-" .
+        color($colors[$b[2] % $c]) . "$2$reset-" .
+        color($colors[$b[3] % $c]) . "$3$reset-" .
+        color($colors[$b[4] % $c]) . "$4$reset-" .
+        color($colors[$b[5] % $c]) . "$5$reset";
 }
 
 my $input_format = ""; # unknown by default;
@@ -122,7 +127,7 @@ if ( $header =~ /^\+(?:-+\+)+$/ ) {
 
 my $date = '\d{4}-\d{2}-\d{2}';
 my $time = '\d{2}:\d{2}:\d{2}(?:\.\d+)?';
-my $uuid = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}';
+my $uuid = '([0-9a-f]{8})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{12})';
 
 # Quick max function :p
 sub max(@) { (sort @_)[-1] }
@@ -259,7 +264,7 @@ while (my $line = <STDIN>) {
         $line =~ s/(\| +)(NULL +)(?=\|)/$1$style_null$2$reset/g;
         $line =~ s/(\| +)(-?\d+\.?\d*(?:e\+\d+)? )(?=\|)/$1$style_int$2$reset/g;
         $line =~ s/\| ((?:$date(?: $time)?|(?:$date )?$time) +)(?=\|)/| $style_date$1$reset/g;
-        $line =~ s/\| ($uuid +)(?=\|)/"| " . uuid_color($1) . "$reset"/gie;
+        $line =~ s/\| $uuid( +)(?=\|)/"| " . uuid_color() . "$6$reset"/gie;
     } elsif ( $input_format eq "vertical" ) {
         $line =~ s/^((\*{27}) \d+\..*? \*{27})/$style_row$1$reset/;
 
