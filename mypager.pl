@@ -77,11 +77,11 @@ END {
 }
 
 my $UUIDCOLORS = [
-    ["rgb511", "rgb522", "rgb533", "rgb544"],  # red
-    ["rgb151", "rgb252", "rgb353", "rgb454"],  # green
-    ["rgb115", "rgb225", "rgb335", "rgb445"],  # blue
-    ["rgb551", "rgb552", "rgb553", "rgb554"],  # yellow
-    ["rgb515", "rgb525", "rgb535", "rgb545"],  # magenta
+    [map {color($_)} "rgb511", "rgb522", "rgb533", "rgb544"],  # red
+    [map {color($_)} "rgb151", "rgb252", "rgb353", "rgb454"],  # green
+    [map {color($_)} "rgb115", "rgb225", "rgb335", "rgb445"],  # blue
+    [map {color($_)} "rgb551", "rgb552", "rgb553", "rgb554"],  # yellow
+    [map {color($_)} "rgb515", "rgb525", "rgb535", "rgb545"],  # magenta
 ];
 
 sub uuid_color() {
@@ -89,14 +89,13 @@ sub uuid_color() {
     
     my @b = unpack('CCCCCC', $digest);
     my @colors = @{ $UUIDCOLORS->[$b[0] % @$UUIDCOLORS] };
-    my $c = scalar(@colors);
 
-    return 
-        color($colors[$b[1] % $c]) . "$1$reset-" .
-        color($colors[$b[2] % $c]) . "$2$reset-" .
-        color($colors[$b[3] % $c]) . "$3$reset-" .
-        color($colors[$b[4] % $c]) . "$4$reset-" .
-        color($colors[$b[5] % $c]) . "$5$reset";
+    return
+        $colors[$b[1] % @colors] . "$1$reset-" .
+        $colors[$b[2] % @colors] . "$2$reset-" .
+        $colors[$b[3] % @colors] . "$3$reset-" .
+        $colors[$b[4] % @colors] . "$4$reset-" .
+        $colors[$b[5] % @colors] . "$5$reset";
 }
 
 my $input_format = ""; # unknown by default;
