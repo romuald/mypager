@@ -263,7 +263,8 @@ while (my $line = <STDIN>) {
         $line =~ s/(\| +)(NULL +)(?=\|)/$1$style_null$2$reset/g;
         $line =~ s/(\| +)(-?\d+\.?\d*(?:e\+\d+)? )(?=\|)/$1$style_int$2$reset/g;
         $line =~ s/\| ((?:$date(?: $time)?|(?:$date )?$time) +)(?=\|)/| $style_date$1$reset/g;
-        $line =~ s/\| $uuid( +)(?=\|)/"| " . uuid_color() . "$6$reset"/gie;
+
+        $line =~ s/\| $uuid( +)(?=\|)/"| " . uuid_color() . "$6$reset"/gie if $CONF{"uuid-color"};
     } elsif ( $input_format eq "vertical" ) {
         $line =~ s/^((\*{27}) \d+\..*? \*{27})/$style_row$1$reset/;
 
@@ -272,6 +273,8 @@ while (my $line = <STDIN>) {
         $line =~ s/: (NULL)$/: $style_null$1$reset/ ||
         $line =~ s/: (-?\d+\.?\d*)$/: $style_int$1$reset/ ||
         $line =~ s/: ((?:$date(?: $time)?|(?:$date )?$time))$/: $style_date$1$reset/;
+
+        $line =~ s/: $uuid$/": " . uuid_color() . "$6$reset"/ie if $CONF{"uuid-color"};
     }
 
     print $line;
@@ -427,3 +430,6 @@ use-less = auto
 # Fix broken MySQL client output
 # Now useless with recent clients
 fix-utf8 = 0
+
+# UUID colorization
+uuid-color = 1
