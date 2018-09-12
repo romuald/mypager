@@ -5,7 +5,8 @@ Pager toolthat will add color to query results of MySQL or
 PostgreSQL command line clients. It will also automatically use less
 when terminal isn't able to display the full result in one page.
 
-mypager is meant to be used as a pager from the mysql or psql command line clients. To use it you must configure them properly.
+mypager is meant to be used as a pager from the mysql or psql command line clients.
+To use it you must configure them properly.
 
 =head2 USAGE (MYSQL)
 
@@ -17,7 +18,7 @@ Inside the mysql client, use the C<pager> command, then check using a simple sel
 
 Alternatively, you can set mypager as the default pager in your client configuration.
 
-In C<~/.my.cnf>:
+In F<$HOME/.my.cnf>:
 
   [mysql]
   pager = mypager
@@ -25,7 +26,8 @@ In C<~/.my.cnf>:
 
 =head2 USAGE (PSQL)
 
-Unlike the mysql client, there is no specific option in the psql client, you'll have to use the PAGER environment variable:
+Unlike the mysql client, there is no specific option in the psql client, you'll
+have to use the PAGER environment variable:
 
   PAGER=mypager psql --connect-options
 
@@ -34,7 +36,7 @@ You may wish to add an alias in your preferred shell rc:
   alias psql="PAGER=mypager psql"
 
 
-Additionally, you'll need to change how query results are shown by editing your C<~/.psqlrc> file:
+Additionally, you'll need to change how query results are shown by editing your F<$HOME/.psqlrc> file:
 
   -- Headers and surrounding pipes for columns
   \pset border 2
@@ -48,4 +50,77 @@ Additionally, you'll need to change how query results are shown by editing your 
 
 =head2 CONFIGURATION
 
-TODO
+Configuration is located in F<$HOME/.mypager.conf>, you can create a new configuration
+file with the current defaults by using C<mypager --installconf>
+
+It is also found in the script itself in the __DATA__ section
+
+
+=head3 CONFIGURATION OPTIONS
+
+Possible styles documented in L<Term::ANSIColor>, you may combine them, for example
+C<bold cyan> is a valid style
+
+=over 3
+
+=item C<style-int>
+
+Text style for integer (or float) types. Default: green
+
+
+=item C<style-null>
+
+Text style for the NULL value. Default: cyan
+
+
+=item C<style-nudatell>
+
+Text style for datetimes (and date) values. Default: yellow
+
+
+=item C<style-header>
+
+Text style for row headers. Default: underline
+
+
+=item C<style-row>
+
+Text style for row header when mysql is used with the C<\G> flag. Default: magenta
+
+
+=item C<long-lines-to-less>
+
+Defaults to 1.
+
+When 1: mypager will switch to less if it encounters any line longer than screen
+width (even if they fit within the height of the screen)
+
+When 0: it will only take the height as variable to switch to less.
+
+
+=item C<less-options>
+
+Options passed on the the C<less> executable, default to C<-S> (chop long lines)
+
+=item C<less-options-overrides-env>
+
+Defaults to 0
+
+If the C<$LESS> environment variable is already set, the default is to set our
+config options ("less-options") with a lower priority (in case of conflicts)
+Set to 1 to "override" the environment variable options
+
+
+=item use-less
+
+Determine when mypager will use the less executable
+Valid options: C<auto>, C<always>, C<never>, default is C<auto>
+
+
+=item fix-utf8
+
+Use to "fix" broken MySQL client UTF-8 output.
+
+This bug was fixed a while ago,  so this option is disabled by default
+
+=back
