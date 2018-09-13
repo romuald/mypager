@@ -78,10 +78,10 @@
 
 <hr>
 <h2 id="installation">Installation</h2>
-<p>You can either simply copy the script to the location you wish, or use <pre><code>make install</code></pre></p>
+<p>You can either simply copy the script to the location you wish, or use <code>make install</code></p>
 <ul>
-<li>when run as <strong>user</strong>, the script will be installed in <pre><code>~/bin/</code></pre></li>
-<li>when run as <strong>root</strong>, the script will be installed in <pre><code>/usr/local/bin/</code></pre></li>
+<li>when run as <strong>user</strong>, the script will be installed in <code>~/bin/</code></li>
+<li>when run as <strong>root</strong>, the script will be installed in <code>/usr/local/bin/</code></li>
 </ul>
 <hr>
 <h2 id="usage-mysql">Usage, MySQL</h2>
@@ -144,10 +144,11 @@ psql --stuff
 
 <h2>Other options</h2>
 
-<p>long-lines-to-less
-    0/**1**, with this option set to 1, the pager will switch to less whenever it encounters a line longer than screen width (even if the screen has enough height available)</p>
-
 <dl>
+<dt>long-lines-to-less</dt>
+<dd>
+  0/<strong>1</strong>, with this option set to 1, the pager will switch to less whenever it encounters a line longer than screen width (even if the screen has enough height available)
+</dd>
 <dt>less-options</dt>
 <dd>
     <strong>-S</strong>, these are the options sent to less (check out the <em>OPTIONS</em> section of the man page for a complete list). The default is to chop long lines, you can add your own choice here, like <em>-I</em> to make searches case insensitive.
