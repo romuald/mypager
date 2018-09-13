@@ -1,11 +1,15 @@
-=head1 MYPAGER
+=head1 NAME
 
+mypager - add color to mysql/psql clients text output
 
-Pager toolthat will add color to query results of MySQL or
+=head1 SYNOPSYS
+
+Pager tool that will add color to query results of MySQL or
 PostgreSQL command line clients. It will also automatically use less
 when terminal isn't able to display the full result in one page.
 
 mypager is meant to be used as a pager from the mysql or psql command line clients.
+
 To use it you must configure them properly.
 
 =head2 USAGE (MYSQL)
