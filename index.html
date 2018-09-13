@@ -33,9 +33,9 @@
         <area shape="poly" alt="fork" title="Fork me on GitHub!" coords="0,0,75,0,149,75,149,149" href="https://github.com/romuald/mypager">
       </map>
         <nav>
-          <li class="title">DOWNLOADS (0.5.0)</li>
-          <li class="downloads"><a href="https://github.com/romuald/mypager/zipball/0.5.0">ZIP</a></li>
-          <li class="downloads"><a href="https://github.com/romuald/mypager/tarball/0.5.0">TAR</a></li>
+          <li class="title">DOWNLOADS (0.6.0)</li>
+          <li class="downloads"><a href="https://github.com/romuald/mypager/zipball/0.6.0">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/romuald/mypager/tarball/0.6.0">TAR</a></li>
           <li class="downloads" id="forkme-small"><a href="https://github.com/romuald/mypager">Fork</a></li>
         </nav>
       </div><!-- end header -->
@@ -64,10 +64,10 @@
 </ul>
 <p>mypager is a tool meant to be used with the MySQL and PostgreSQL command line clients on unix platforms.</p>
 
-<p>It's goal is to ease the reading of resultsets, doing 2 things:</p>
+<p>Its goal is to ease the reading of resultsets, doing 2 things:</p>
 
 <ul>
-<li>coloring data (numbers, dates and NULLs)</li>
+<li>coloring data (numbers, dates, UUIDs and NULLs)</li>
 <li>using the less command in case the output don't fit in the terminal</li>
 </ul><p>Here is a sample output:</p>
 
@@ -76,6 +76,13 @@
 <p>It currently requires perl 5.8, preferably with the <a href="http://search.cpan.org/dist/TermReadKey/ReadKey.pm">Term::ReadKey</a> module
 (should work without, using the <code>stty</code> command)</p>
 
+<hr>
+<h2 id="installation">Installation</h2>
+<p>You can either simply copy the script to the location you wish, or use <pre><code>make install</code></pre></p>
+<ul>
+<li>when run as <strong>user</strong>, the script will be installed in <pre><code>~/bin/</code></pre></li>
+<li>when run as <strong>root</strong>, the script will be installed in <pre><code>/usr/local/bin/</code></pre></li>
+</ul>
 <hr>
 <h2 id="usage-mysql">Usage, MySQL</h2>
 
@@ -160,6 +167,11 @@ psql --stuff
 <dt>fix-utf8</dt>
 <dd>
     <strong>0</strong>/1, try to fix broken UTF-8 output of older (&lt; 5.5 ?) MySQL clients. This option fixes unaligned columns when 2 bytes characters are present in a cell.
+  </dd>
+</dl>
+<dt>uuid-color</dt>
+<dd>
+    0/<strong>1</strong>, colorize UUIDs. The UUIDs are colorized using a MD5 hash, to more easily identify 2 identical UUIDs in a list. This is especially useful when listing UUID1 created in short amount of time.
   </dd>
 </dl>
 <hr>
