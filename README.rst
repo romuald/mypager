@@ -8,9 +8,9 @@ My *(sql)*  Pager
 
 mypager is a tool meant to be used with the MySQL and PostgreSQL command line clients on unix platforms.
 
-It's goal is to ease the reading of resultsets, doing 2 things:
+Its goal is to ease the reading of resultsets, doing 2 things:
 
-- coloring data (numbers, dates and NULLs)
+- coloring data (numbers, dates, UUIDs and NULLs)
 - using the less command in case the output don't fit in the terminal
 
 Here is a sample output:
@@ -21,31 +21,41 @@ It currently requires perl 5.8, preferably with the `Term::ReadKey <http://searc
 (should work without, using the ``stty`` command)
 
 
+Installation
+_________________
+
+
+You can either simply copy the script to the location you wish, or use ``make install``
+
+- when run as **user**, the script will be installed in ``~/bin/``
+- when run as **root**, the script will be installed in ``/usr/local/bin/``
+
+
 Usage, MySQL
 _________________
 
 To use it you'll just have to tell your mysql client to use it as a pager::
 
-  mysql> pager /path/to/mypager.pl
+  mysql> pager /path/to/mypager
 
 or edit your ``~/.my.cnf`` file::
 
   [mysql]
-      pager = /path/to/mypager.pl
+      pager = /path/to/mypager
 
 Usage, PostgreSQL
 ____________________
 
-The script was originaly designed to work with MySQL, but an option exists in PostgreSQL client that format output as mypager expects it.
+The script was originally designed to work with MySQL, but an option exists in PostgreSQL client that format output as mypager expects it.
 
 Unlike the mysql client, there is no specific option in the PostgreSQL client, you'll have to use the ``PAGER`` environment variable, for example::
 
-    export PAGER=/path/to/mypager.pl
+    export PAGER=/path/to/mypager
     psql --stuff
 
 Or in your ``.bashrc`` / ``.zshrc``::
 
-    alias psql="PAGER=/path/to/mypager.pl psql"
+    alias psql="PAGER=/path/to/mypager psql"
 
 Then, you'll have to edit your ``.psqlrc`` file to set 2 default options::
 
@@ -67,7 +77,7 @@ The configuration file is located in ``~/.mypager.conf``.
 
 A default configuration is present at the end of the script itself, should you wish to modify it instead.
 
-You can use ``mypager.pl --installconf`` to write the default configuration to ``~/.mypager.conf``.
+You can use ``mypager --installconf`` to write the default configuration to ``~/.mypager.conf``.
 
 
 Styles
@@ -101,6 +111,9 @@ use-less
 
 fix-utf8
     **0**/1, try to fix broken UTF-8 output of older (< 5.5 ?) MySQL clients. This option fixes unaligned columns when 2 bytes characters are present in a cell.
+
+uuid-color
+    0/**1**, colorize UUIDs. The UUIDs are colorized using a MD5 hash, to more easily identify 2 identical UUIDs in a list. This is especially useful when listing UUID1 created in short amount of time
 
 
 TODO
