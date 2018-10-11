@@ -1,3 +1,4 @@
+Replace default env shebang by the system perl
 --- a/mypager
 +++ b/mypager
 @@ -1,4 +1,4 @@
