@@ -3,7 +3,7 @@ Maintainer: Romuald Brunet <romuald@chivil.com>
 Section: misc
 Priority: optional
 Standards-Version: 4.2.1
-Build-Depends: debhelper (>= 8), perl (>= 5.8.0)
+Build-Depends: debhelper (>= 11~), perl (>= 5.8.0)
 Vcs-Git: https://github.com/romuald/mypager.git
 Vcs-Browser: https://github.com/romuald/mypager
 Homepage: http://romuald.github.io/mypager/
