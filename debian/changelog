@@ -1,5 +1,5 @@
-mypager (0.6.0-1) unstable; urgency=low
+mypager (0.6.1-1) unstable; urgency=low
 
   * Initial release (Closes: #908746)
 
- -- Romuald Brunet <romuald@chivil.com>  Wed, 10 Oct 2018 18:04:01 +0200
+ -- Romuald Brunet <romuald@chivil.com>  Wed, 17 Oct 2018 16:59:06 +0200
