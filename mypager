@@ -366,7 +366,7 @@ sub write_defaults() {
 
     if ( -f $config_file ) {
         local $| = 1; # autoflush
-        print STDERR "$config_file already exits, Overwrite? [y/N] ";
+        print STDERR "$config_file already exist, Overwrite? [y/N] ";
 
         my $response = <STDIN>;
 
