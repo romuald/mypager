@@ -274,7 +274,7 @@ while (my $line = <STDIN>) {
         $line =~ s/: (-?\d+\.?\d*)$/: $style_int$1$reset/ ||
         $line =~ s/: ((?:$date(?: $time)?|(?:$date )?$time))$/: $style_date$1$reset/;
 
-        $line =~ s/: $uuid$/": " . uuid_color() . "$6$reset"/ie if $CONF{"uuid-color"};
+        $line =~ s/: $uuid$/": " . uuid_color() . "$reset"/ie if $CONF{"uuid-color"};
     }
 
     print $line;
