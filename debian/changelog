@@ -1,8 +1,14 @@
+mypager (0.6.3-1) unstable; urgency=medium
+
+  * New upstream release
+
+ -- Romuald Brunet <romuald@chivil.com>  Mon, 11 Jan 2021 20:55:02 +0100
+
 mypager (0.6.2-1) unstable; urgency=low
 
   * New upstream release
 
- -- Romuald Brunet <romuald@chivil.com>  Fry, 08 Jan 2021 10:39:06 +0100
+ -- Romuald Brunet <romuald@chivil.com>  Fri, 08 Jan 2021 10:39:06 +0100
 
 mypager (0.6.1-1) unstable; urgency=low
 
