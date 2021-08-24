@@ -6,7 +6,7 @@ Standards-Version: 4.5.1
 Build-Depends: debhelper (>= 11~), perl (>= 5.8.0)
 Vcs-Git: https://github.com/romuald/mypager.git
 Vcs-Browser: https://github.com/romuald/mypager
-Homepage: http://romuald.github.io/mypager/
+Homepage: https://romuald.github.io/mypager/
 
 
 Package: mypager
