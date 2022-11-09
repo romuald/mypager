@@ -2,7 +2,7 @@ Source: mypager
 Maintainer: Romuald Brunet <romuald@chivil.com>
 Section: misc
 Priority: optional
-Standards-Version: 4.5.1
+Standards-Version: 4.6.1
 Build-Depends: debhelper-compat (= 13), perl
 Vcs-Git: https://github.com/romuald/mypager.git
 Vcs-Browser: https://github.com/romuald/mypager
