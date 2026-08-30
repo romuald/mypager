@@ -1,4 +1,4 @@
-mypager (0.6.3-1.1) UNRELEASED; urgency=medium
+mypager (0.6.3-1.1) unstable; urgency=medium
 
   * Non-maintainer upload.
     Closes: #1141468
@@ -12,7 +12,7 @@ mypager (0.6.3-1.1) UNRELEASED; urgency=medium
   * Update standards version to 4.7.4, no changes needed.
   * Set debhelper-compat version in Build-Depends.
 
- -- Andreas Tille <tille@debian.org>  Sun, 30 Aug 2026 14:09:12 +0200
+ -- Andreas Tille <tille@debian.org>  Sun, 30 Aug 2026 15:30:35 +0200
 
 mypager (0.6.3-1) unstable; urgency=medium
 
