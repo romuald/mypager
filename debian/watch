@@ -1,3 +1,4 @@
-version=4
-opts=filenamemangle=s/.+\/v?(\d\S+)\.tar\.gz/mypager-$1\.tar\.gz/ \
-  https://github.com/romuald/mypager/tags .*/v?(\d\S+)\.tar\.gz
+Version: 5
+
+Template: Github
+Dist: https://github.com/romuald/mypager
