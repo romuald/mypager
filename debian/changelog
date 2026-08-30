@@ -3,6 +3,8 @@ mypager (0.6.3-1.1) UNRELEASED; urgency=medium
   * Non-maintainer upload.
     Closes: #1141468
   * Set Vcs fields to Debian namespace on Salsa
+  * Secure URI in Homepage
+    Closes: #1146157
 
  -- Andreas Tille <tille@debian.org>  Sun, 30 Aug 2026 14:09:12 +0200
 
