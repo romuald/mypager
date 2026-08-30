@@ -1,0 +1,13 @@
+Package: mypager
+Version: 0.6.3-1
+Architecture: all
+Maintainer: Romuald Brunet <romuald@chivil.com>
+Installed-Size: 27
+Depends: perl (>= 5.8.0), less, libterm-readkey-perl
+Section: misc
+Priority: optional
+Homepage: http://romuald.github.io/mypager/
+Description: pager for MySQL/PostgreSQL command line clients
+ Userfriendly pager that will add color to query results of MySQL or
+ PostgreSQL command line clients. It will also automatically use less
+ when terminal isn't able to display the full result in one page.

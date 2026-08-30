@@ -1,0 +1,9 @@
+Replace default env shebang by the system perl
+--- a/mypager
++++ b/mypager
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env perl
++#!/usr/bin/perl
+ package main;
+ 
+ use strict;
