@@ -8,6 +8,7 @@ mypager (0.6.3-1.1) UNRELEASED; urgency=medium
   * d/watch: version=5
   * Bump debhelper from old 11 to 13.
   * Remove redundant Priority: optional from source stanza.
+  * Update standards version to 4.7.4, no changes needed.
 
  -- Andreas Tille <tille@debian.org>  Sun, 30 Aug 2026 14:09:12 +0200
 

@@ -1,7 +1,7 @@
 Source: mypager
 Maintainer: Romuald Brunet <romuald@chivil.com>
 Section: misc
-Standards-Version: 4.5.1
+Standards-Version: 4.7.4
 Build-Depends: debhelper (>= 13~), perl
 Vcs-Browser: https://salsa.debian.org/debian/mypager
 Vcs-Git: https://salsa.debian.org/debian/mypager.git
