@@ -1,3 +1,9 @@
+mypager (0.6.3-1.2) UNRELEASED; urgency=medium
+
+ * Remove unrelated sample file from source
+
+ -- Romuald Brunet <romuald@chivil.com>  Tue, 01 Sep 2026 23:10:46 +0200
+
 mypager (0.6.3-1.1) unstable; urgency=medium
 
   * Non-maintainer upload.
